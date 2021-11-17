@@ -1,0 +1,23 @@
+{
+  "name": "mm200",
+  "version": "1.0.0",
+  "description": "Apputvikling, MaroonAzulineJainosaurus-gang",
+  "main": "Fibonachi.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Phan101/MM200.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Phan101/MM200/issues"
+  },
+  "homepage": "https://github.com/Phan101/MM200#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "pg": "^8.7.1"
+  }
+}

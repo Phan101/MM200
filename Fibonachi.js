@@ -10,8 +10,9 @@ for (let i = 1; i <= number; i++) {
     n1 = n2;
     n2 = nxtNumber;
 }
-let m = 10
-//YOLO
+
+
+//test
 
 
 
