@@ -13,6 +13,7 @@ for (let i = 1; i <= number; i++) {
 let m = 10
 //YOLO
 //jeg liker damer
+//jeg liker alle
 
 
 // kjkjk
