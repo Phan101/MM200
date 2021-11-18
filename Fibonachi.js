@@ -15,3 +15,4 @@ let m = 10
 //jeg liker damer
 
 
+// kjkjk
