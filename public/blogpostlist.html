@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+    <title>blogpostlist</title>
+</head> 
+<body>
+ 
+    <!----------- HTML-elements -------------->
+    <a href="index.html">Home</a> 
+    <div id="container"></div>
+        
+    <!------------- JavaScript --------------->
+    <script>
+        let container = document.getElementById("container");
+
+        async function listBlogPosts() {
+
+            let url = "/blogposts";
+            let token = localStorage.getItem("token")
+            let cfg = {
+                method: "GET",
+                headers: {"authorization":token}
+            }
+            try {
+                let response = await fetch(url,cfg);
+                let data = await response.json();
+
+                if(response.status != 200){
+                    throw data.error;
+                }
+
+                container.innerHTML = ""; //delete previous content
+
+                for(let value of data){
+                    let date = new Date(value.date);
+
+                    let html = `<h2>${value.heading}</h2>
+                                <p>${date.toLocaleDateString()}</p>
+                                <p>${value.blogtext}</p><hr>`;
+
+                    let div = document.createElement("div");
+                    div.innerHTML = html;
+                    container.appendChild(div);
+
+
+                    let delbtn = document.createElement("button");
+                    delbtn.innerHTML = "Delete";
+
+                    delbtn.addEventListener("click", function(evt){
+                        deleteBlogPost(value.id);
+                    });
+
+                    div.insertBefore(delbtn, div.lastElementChild);
+                }
+            }
+            catch(error) {
+                console.log(error);
+            }
+        }
+        
+        async function deleteBlogPost(blogpostId){
+            let url = "/blogposts";
+            let token = localStorage.getItem("token");
+
+            let updata = {
+                id: blogpostId
+            }
+
+            let cfg = {
+                method: "DELETE",
+                headers: {
+                    "content-type":"application/json",
+                    "authorization":token
+                },
+                body: JSON.stringify(updata)
+            }
+
+            try{
+                let response = await fetch(url, cfg);
+                let data = await response.json();
+
+                if(response.status != 200){
+                    throw data.error
+                }
+
+                listBlogPosts() //refresh the list
+            }
+            catch(error){
+                console.log(error);
+            }
+        }
+        listBlogPosts();
+
+    </script>
+
+    <!---------------- CSS ------------------->
+    <style>        
+
+    </style>
+
+</body>
+
+</html>
