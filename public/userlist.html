@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+    <title>userlist</title>
+</head> 
+<body>
+ 
+    <!----------- HTML-elements -------------->
+    <a href="index.html">Home</a> 
+    <div id="container"></div>
+        
+    <!------------- JavaScript --------------->
+    <script>
+        let container = document.getElementById("container");
+
+        async function listBlogPosts() {
+
+            let url = "/users";
+
+            try {
+                let response = await fetch(url);
+                let data = await response.json();
+                console.log(data);
+
+                if(response.status != 200){
+                    throw data.error;
+                }
+
+                container.innerHTML = ""; //delete previous content
+
+                for(let value of data){
+                    let date = new Date(value.date);
+
+                    let html = `<h2>username: ${value.username}</h2>
+                                <p>userId: ${value.id}</p><hr>`;
+
+                    let div = document.createElement("div");
+                    div.innerHTML = html;
+                    container.appendChild(div);
+                }
+            }
+            catch(error) {
+                console.log(error);
+            }
+        }
+        listBlogPosts();
+
+    </script>
+
+    <!---------------- CSS ------------------->
+    <style>        
+
+    </style>
+
+</body>
+
+</html>
