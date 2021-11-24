@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+    <title>createuser</title>
+</head>
+<body> 
+
+    <!----------- HTML-elements -------------->
+    <a href="index.html">Home</a> 
+    <h1>Create new user</h1>
+    <input id="inpUsername" type="text" placeholder="Username"/> <br>
+    <input id="inpPassword" type="text" placeholder="Password"/> <br><br>
+    
+    <button id="btnCreate">Create user</button><br>
+    <h3 id="txtResult">Result...</h3>
+    <!------------- JavaScript --------------->
+    <script>
+        let inpUsername = document.getElementById("inpUsername");
+        let inpPassword = document.getElementById("inpPassword");
+        let btnCreate = document.getElementById("btnCreate");
+        let txtResult = document.getElementById("txtResult");
+ 
+        btnCreate.addEventListener("click", async function(evt){
+            let url = "/users";
+            let credString = createCredentialString(inpUsername.value, inpPassword.value)
+            
+            let cfg = {
+                method: "POST",
+                headers: {"authorization":credString}
+            }
+
+            try{
+                let response = await fetch(url, cfg);
+                let data = await response.json();
+
+                if(response.status != 200){
+                    throw data.error;;
+                }
+                txtResult.innerHTML = data.msg
+            }
+            catch(err){
+                console.log(err);
+                txtResult.innerHTML = "Something went wrong - check the console window";
+            }
+        });
+        //---------------------------
+        function createCredentialString(username,password){
+            let combinedStr = `${username}:${password}`
+            let b64Str = btoa(combinedStr);
+            return `basic ${b64Str}`;
+        }
+    </script>
+
+    <!---------------- CSS ------------------->
+    <style>        
+
+    </style>
+
+</body>
+
+</html>
