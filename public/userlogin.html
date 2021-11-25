@@ -15,6 +15,7 @@
         <input id="inpPassword" type="text" placeholder="Password"/> <br><br>
     
         <button id="btnLogin">Logg inn</button><br>
+        <h2 id="txtResult"></h2>
     </div>
     <!------------- JavaScript --------------->
     <script>
@@ -43,7 +44,7 @@
                 let data = await response.json();
 
                 if(response.status != 200){
-                    throw data.error;;
+                    throw data.error;
                 }
                 txtResult.innerHTML = data.msg;
                 localStorage.setItem("token", data.token);
