@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">    
     <title>login</title>
-    <link rel="stylesheet" type="text/css" href="/css/stylesheet.css">
+    <link rel="stylesheet" type='text/css' href="/css/stylesheet.css">
 </head>
 <body> 
 
-    <!----------- HTML-elements -------------->
-    <a href="index.html">Home</a> 
+    <!----------- HTML-elements --------------> 
     <div class="main">
         <h1 class="titleText">login</h1>
         <input id="inpUsername" type="text" placeholder="Username"/> <br>
@@ -17,7 +16,6 @@
     
         <button id="btnLogin">login</button><br>
     </div>
-    <h3 id="txtResult">Result...</h3>
     <!------------- JavaScript --------------->
     <script>
         let inpUsername = document.getElementById("inpUsername");
@@ -49,7 +47,7 @@
                 }
                 txtResult.innerHTML = data.msg;
                 localStorage.setItem("token", data.token);
-                
+
                 //må endre userlist til /todolist.html(?)
                 window.location.href = "/userlist.html";
             }
