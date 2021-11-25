@@ -25,9 +25,9 @@
         let btnLogin = document.getElementById("btnLogin");
         let txtResult = document.getElementById("txtResult");
 
-        //Ikke logge inn dersom man er logget inn
+        // Skip login if token is stored.
           if (localStorage.token){
-            window.location.href = "userlist.html";
+            window.location.href = "/userlist.html";
         }
         
  
@@ -49,6 +49,9 @@
                 }
                 txtResult.innerHTML = data.msg;
                 localStorage.setItem("token", data.token);
+                
+                //må endre userlist til /todolist.html(?)
+                window.location.href = "/userlist.html";
             }
             catch(err){
                 console.log(err);
