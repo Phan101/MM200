@@ -41,7 +41,7 @@
     font-family: "Ubuntu", sans-serif;
 }
 
-#btnLogin {
+#btnLogin, #btnCreate {
     cursor: pointer;
     border-radius: 5em;
     color: #fff;
