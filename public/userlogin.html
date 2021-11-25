@@ -21,6 +21,12 @@
         let inpPassword = document.getElementById("inpPassword");
         let btnLogin = document.getElementById("btnLogin");
         let txtResult = document.getElementById("txtResult");
+
+        //Ikke logge inn dersom man er logget inn
+          if (localStorage.token){
+            window.location.href = "http://localhost:8080/userlist.html";
+        }
+        
  
         btnLogin.addEventListener("click", async function(evt){
             let url = "/users/login";

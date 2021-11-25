@@ -1,8 +1,13 @@
 {
-  "name": "mm200",
+  "name": "eksamen",
   "version": "1.0.0",
-  "description": "Apputvikling, MaroonAzulineJainosaurus-gang",
+  "description": "",
   "main": "server.js",
+  "dependencies": {
+    "express": "4.17.1",
+    "pg": "8.7.1"
+  },
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
@@ -16,9 +21,13 @@
   "bugs": {
     "url": "https://github.com/Phan101/MM200/issues"
   },
+<<<<<<< HEAD
   "homepage": "https://github.com/Phan101/MM200#readme",
   "dependencies": {
     "express": "4.17.1",
     "pg": "8.7.1"
   }
+=======
+  "homepage": "https://github.com/Phan101/MM200#readme"
+>>>>>>> 7a786555f784be4bdef283cbba2c77bddfefdfd3
 }
