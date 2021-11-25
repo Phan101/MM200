@@ -9,13 +9,14 @@
  
     <!----------- HTML-elements -------------->
     <a href="index.html">Home</a> 
+    <button id="logOut">Logout</button>
     <div id="container"></div>
         
     <!------------- JavaScript --------------->
     <script>
         let container = document.getElementById("container");
 
-        async function listBlogPosts() {
+        async function listUsers() {
 
             let url = "/users";
 
@@ -44,7 +45,25 @@
                 console.log(error);
             }
         }
-        listBlogPosts();
+        listUsers();
+
+    //Logout option! MÅ ENDRE URL!
+    document.getElementById("logOut").addEventListener("click", async function(evt){
+        let url = "/users";
+        try{
+            let response = await fetch(url);
+            let data = await response.json();
+
+            if(response.status != 200){
+                    throw data.error;
+                }
+                localStorage.clear();
+                window.location.href = "/userlogin.html";
+        }
+        catch(err){
+                console.log(err);
+            }
+    });
 
     </script>
 
