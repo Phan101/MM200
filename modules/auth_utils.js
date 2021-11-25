@@ -1,8 +1,5 @@
 const crypto = require("crypto");
 
-//the secret must be stored in an env. variable in the finished app
-const secret = "dronningmaudsland";
-
 let utils = {};
 
 utils.decodeCred = function(credString){
