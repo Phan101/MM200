@@ -3,10 +3,12 @@ const server = express();
 const PORT = process.env.PORT || 8080;
 server.set("port", PORT);
 
+const todoLists = require("./modules/lists.js");
 // middleware ---------------------------
 server.use(express.static("public"));
 server.use(express.json());
 
+server.use(todoLists)
 
 //general error handlogig----------------
 server.use(function(err, req, res, next){
