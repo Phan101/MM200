@@ -1,10 +1,10 @@
 const express = require("express");
 const db = require("./db.js");
 const authUtils = require("./auth_utils.js")
-const router = express.Router();
+const app = express.Router();
 
 //user login
-router.post("/users/login", async function(req, res, next) {
+app.post("/users/login", async function(req, res, next) {
 	let credString = req.headers.authorization;
     let cred = authUtils.decodeCred(credString);
 
@@ -45,7 +45,7 @@ router.post("/users/login", async function(req, res, next) {
 });
 
 //list all users
-router.get("/users", async function(req,res,next){
+app.get("/users", async function(req,res,next){
 	try{
         let data = await db.getAllUsers();
         res.status(200).json(data.rows).end();
@@ -55,7 +55,7 @@ router.get("/users", async function(req,res,next){
 });
 
 //create a new user
-router.post("/users", async function(req,res,next){
+app.post("/users", async function(req,res,next){
     let credString = req.headers.authorization;
     let cred = authUtils.decodeCred(credString);
 
@@ -81,8 +81,8 @@ router.post("/users", async function(req,res,next){
 });
 
 //delete a user
-router.delete("/users", async function(req, res, next){
+app.delete("/users", async function(req, res, next){
 	res.status(200).send("Hello for DELETE - /users/").end();
 });
 
-module.exports = router;
+module.exports = app;
