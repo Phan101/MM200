@@ -1,34 +1,41 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">    
-    <title>createuser</title>
+    <title>blogpostcreate</title>
 </head>
 <body> 
 
     <!----------- HTML-elements -------------->
     <a href="index.html">Home</a> 
-    <h1>Create new user</h1>
-    <input id="inpUsername" type="text" placeholder="Username"/> <br>
-    <input id="inpPassword" type="text" placeholder="Password"/> <br><br>
-    
-    <button id="btnCreate">Create user</button><br>
+    <input id="inpHeading" type="text" /> <br>
+    <textarea id="inpBlogtext" cols="80" rows="10"></textarea><br>
+    <button id="btnCreate">Create Post</button><br>
     <h3 id="txtResult">Result...</h3>
+        
     <!------------- JavaScript --------------->
     <script>
-        let inpUsername = document.getElementById("inpUsername");
-        let inpPassword = document.getElementById("inpPassword");
+        let inpHeading = document.getElementById("inpHeading");
+        let inpBlogtext = document.getElementById("inpBlogtext");
         let btnCreate = document.getElementById("btnCreate");
         let txtResult = document.getElementById("txtResult");
  
         btnCreate.addEventListener("click", async function(evt){
-            let url = "/users";
-            let credString = createCredentialString(inpUsername.value, inpPassword.value)
-            
+            let url = "/blogposts";
+
+            let updata = {
+                heading: inpHeading.value,
+                blogtext: inpBlogtext.value
+            }
+            let token = localStorage.getItem("token");
             let cfg = {
                 method: "POST",
-                headers: {"authorization":credString}
+                headers: {
+                    "content-type":"application/json",
+                    "authorization": token
+                },
+                body: JSON.stringify(updata)
             }
 
             try{
@@ -45,12 +52,6 @@
                 txtResult.innerHTML = "Something went wrong - check the console window";
             }
         });
-        //---------------------------
-        function createCredentialString(username,password){
-            let combinedStr = `${username}:${password}`
-            let b64Str = btoa(combinedStr);
-            return `basic ${b64Str}`;
-        }
     </script>
 
     <!---------------- CSS ------------------->

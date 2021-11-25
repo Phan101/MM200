@@ -10,9 +10,28 @@ const pool = new pg.Pool({
 // database methods ----------------------------
 let dbMethods = {}; //create empty object
 
+//----------------------------------------------
+dbMethods.getAllBlogPosts = function(){
+    let sql = "SELECT * FROM itemlists"
+    return pool.query(sql); //return the promise
+}
+
+//----------------------------------------------
+dbMethods.createBlogPosts = function(heading, blogtext, userid){
+    let sql = "INSERT INTO itemlists (id, date, heading, blogtext, userid) VALUES(DEFAULT, DEFAULT, $1, $2, $3) returning *";
+	let values = [heading, blogtext, userid];
+    return pool.query(sql, values); //return the promise
+}
+//-----------------------------------------------
+dbMethods.deleteBlogPosts = function(id){
+    let sql = "DELETE FROM itemlists WHERE itemid = $1 RETURNING *";
+    let values = [id];
+    return pool.query(sql, values);//return the promise
+}
+
 //--------
 dbMethods.getAllUsers = function() {
-    let sql = "SELECT id, username FROM users";
+    let sql = "SELECT id, username, password, salt FROM users";
     return pool.query(sql); //return the promise
 }
 //--------
@@ -35,6 +54,14 @@ dbMethods.deleteUser = function(id) {
 }
 //--------
 
+dbMethods.getAllLists = function(){
+    let sql = "SELECT * FROM todolists"
+    return pool.query(sql); //return the promise
+}
+dbMethods.getAllListItems = function(){
+    let sql = "SELECT * FROM itemlists";
+    return pool.query(sql); //return the promise
+}
 //--------
 // export dbMethods---------------------------------
 module.exports = dbMethods;

@@ -16,7 +16,7 @@
     <script>
         let container = document.getElementById("container");
 
-        async function listUsers() {
+        async function listBlogPosts() {
 
             let url = "/users";
 
@@ -45,7 +45,7 @@
                 console.log(error);
             }
         }
-        listUsers();
+        listBlogPosts();
 
     //Logout option! MÅ ENDRE URL!
     document.getElementById("logOut").addEventListener("click", async function(evt){

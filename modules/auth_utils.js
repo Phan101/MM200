@@ -60,8 +60,8 @@ utils.verifyToken = function(token){
         //signature not ok
         return false;
     }
-    let payloadTxt = Buffer.from(tokenArr[1], "base64").toString("ascii");
-    let payload = JSON.parse(payloadTxt);
+    let validTokenTxt = Buffer.from(tokenArr[1], "base64").toString("ascii");
+    let validToken = JSON.parse(validTokenTxt);
 
     let expireTime = payload.iat + 24 * 60 * 60 * 1000; //time in millisec
     if(expireTime < Date.now()){
@@ -69,7 +69,7 @@ utils.verifyToken = function(token){
         return false;
     }
     //token ok
-    return payload;
+    return validToken;
 };
 utils.verifyPassword = function(pswFromUser, hashFromDB, saltFromDB) {
     hash = crypto.scryptSync(pswFromUser, saltFromDB, 64).toString("hex");
