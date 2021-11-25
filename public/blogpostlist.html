@@ -17,42 +17,56 @@
 
         async function listBlogPosts() {
 
-            let url = "/blogposts";
+            let itemurl = "/itemlist";
+            let listurl = "/list"
             let token = localStorage.getItem("token")
             let cfg = {
                 method: "GET",
                 headers: {"authorization":token}
             }
             try {
-                let response = await fetch(url,cfg);
-                let data = await response.json();
+                let responseitems = await fetch(itemurl,cfg);
+                let dataitems = await responseitems.json();
+                
 
-                if(response.status != 200){
-                    throw data.error;
+                let responseList = await fetch(listurl,cfg);
+                let dataLists = await responseList.json();
+                
+
+                if(responseitems.status != 200){
+                    throw dataitems.error;
+                }
+                if(responseList.status != 200){
+                    throw dataLists.error;
                 }
 
                 container.innerHTML = ""; //delete previous content
 
-                for(let value of data){
-                    let date = new Date(value.date);
+                for(let listvalue of dataLists){
+                    //let date = new Date(listvalue.date);
+                    let listdiv = document.createElement("div");
+                    let headerText = `<h2>${listvalue.header}</h2>`
+                    listdiv.innerHTML = headerText;
+                    container.appendChild(listdiv);
 
-                    let html = `<h2>${value.heading}</h2>
-                                <p>${date.toLocaleDateString()}</p>
-                                <p>${value.blogtext}</p><hr>`;
+                    
+                    let itemHTML = "";
+                    for (let itemvalue of dataitems){
+                        if (listvalue.id === itemvalue.listeid) {
+                            let listItemDiv = document.createElement("div");
+                            itemHTML = `<p>${itemvalue.text}</p>
+                                <p>${itemvalue.itemid}</p><br>`;
+                            listItemDiv.innerHTML = itemHTML;
+                            listdiv.appendChild(listItemDiv);
+                            let delbtn = document.createElement("button");
+                            delbtn.innerHTML = "Delete";
 
-                    let div = document.createElement("div");
-                    div.innerHTML = html;
-                    container.appendChild(div);
-
-
-                    let delbtn = document.createElement("button");
-                    delbtn.innerHTML = "Delete";
-
-                    delbtn.addEventListener("click", function(evt){
-                        deleteBlogPost(value.id);
-                    });
-
-                    div.insertBefore(delbtn, div.lastElementChild);
+                            delbtn.addEventListener("click", function(evt){
+                                deleteBlogPost(itemvalue.itemid);
+                            });
+                            listItemDiv.insertBefore(delbtn, listItemDiv.lastElementChild);
+                        }
+                    }
                 }
             }
             catch(error) {
@@ -72,7 +86,7 @@
                 method: "DELETE",
                 headers: {
                     "content-type":"application/json",
-                    "authorization":token
+                    //"authorization":token
                 },
                 body: JSON.stringify(updata)
             }

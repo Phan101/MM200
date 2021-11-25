@@ -3,19 +3,24 @@ const db = require("./db.js");
 const protect = require("./auth");
 const router = express.Router();
 
-router.get("/blogposts", protect, async function(req, res, next) {
-	
-	
-	
+router.get("/list",protect, async function(req, res, next) {
 	try{  
-		let data = await db.getAllBlogPosts();
+		let data = await db.getAllLists();
 		res.status(200).json(data.rows).end();
 	}
 	catch(err){
 		next(err);
 	}
 });
-
+router.get("/itemlist",protect, async function(req, res, next) {
+	try{  
+		let data = await db.getAllListItems();
+		res.status(200).json(data.rows).end();
+	}
+	catch(err){
+		next(err);
+	}
+});
 router.post("/blogposts", protect, async function(req,res,next){
 	let updata = req.body;
 	let userid = res.locals.userid;
@@ -34,12 +39,13 @@ router.post("/blogposts", protect, async function(req,res,next){
 	}
 });
 
-router.delete("/blogposts", protect, async function(req, res, next){
+router.delete("/blogposts", async function(req, res, next){
 	let updata = req.body;
-	let userid = res.locals.userid;
+	let id = updata.id;
 	try{
-		let data = await db.deleteBlogPosts(updata.id, userid);
+		let data = await db.deleteBlogPosts(id);
 		if (data.rows.length > 0){
+			
 			res.status(200).json({msg: "The blogpost was deleted successfully"}).end();
 		}
 		else{
