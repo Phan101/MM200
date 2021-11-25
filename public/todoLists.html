@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+    <link rel="shortcut icon" href="#">
     <title>todoLists</title>
 </head> 
 <body>
@@ -10,13 +11,29 @@
     <!----------- HTML-elements -------------->
     <a href="index.html">Home</a> 
     <div id="container"></div>
-    <div id="editBox">
-        
+    <div id="newItemBox">
+        <input id="newListItem" type="text" placeholder="Write a new item to the list">
+        <button id="submitListItem">Submit</button>
     </div> 
     <!------------- JavaScript --------------->
     <script>
         let container = document.getElementById("container");
-        let editBox = document.getElementById("editBox");
+        let newItemBox = document.getElementById("newItemBox");
+        let submitListItemBtn = document.getElementById("submitListItem");
+        
+        /*function showNewItemBox(listID) {
+            let genInpNewItem = document.createElement("input");
+            genInpNewItem.type = "text";
+            genInpNewItem.placeholder = "Write a new item to the list";
+            submitListItemBtn.addEventListener("click", function(params) {
+                addNewListItem(listID);
+            });
+        }*/
+        function addNewListItem(listID) {
+            
+            let inpNewListItem = document.getElementById("newListItem");
+            console.log(listID);
+        }
         async function showAllToDoLists() {
 
             let itemUrl = "/itemlist";
@@ -49,9 +66,16 @@
                     let headerText = `<h2>${listvalue.header}</h2>`
                     listdiv.innerHTML = headerText;
                     container.appendChild(listdiv);
+                     //new item button
+                    let newItemBtn = document.createElement("button");
+                    newItemBtn.innerHTML = "new item";
 
-                    
-                    let itemHTML = "";
+                    newItemBtn.addEventListener("click", function(evt){
+                        console.log("lets add some tasks :D");
+                    });
+                            
+                    listdiv.appendChild(newItemBtn);
+                     //#new item  button
                     for (let itemvalue of itemsData){
                         if (listvalue.id === itemvalue.listeid) {
                             let listItemDiv = document.createElement("div");
