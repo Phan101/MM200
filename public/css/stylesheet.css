@@ -17,6 +17,11 @@
     text-align: center;
 }
 
+#txtResult {
+    text-align: center;
+    color: #3C3C3C;
+}
+
 #inpUsername, #inpPassword {
     width: 76%;
     color: rgb(38, 50, 56);
@@ -50,4 +55,8 @@
     margin-left: 35%;
     font-size: 13px;
     box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.04);
+}
+
+#btnLogin:hover {
+    background: linear-gradient(to right, #9a39ac, #ff00ea);
 }
