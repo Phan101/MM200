@@ -171,6 +171,7 @@
             let url = "/changeitemlist";
 
             let updata = {
+                dbTable: "itemlist",
                 dbCol: "text",
                 newDbText: itemText,
                 dbID: "itemid",
@@ -204,6 +205,8 @@
             //let token = localStorage.getItem("token");
 
             let updata = {
+                dbTable: "itemlists", 
+                dbCol: "itemid",
                 id: listItemID
             }
 

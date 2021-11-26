@@ -40,9 +40,8 @@ router.post("/newitemlist", async function(req,res,next){
 });
 router.delete("/itemlist", async function(req, res, next){
 	let updata = req.body;
-	let id = updata.id;
 	try{
-		let data = await db.deleteListItems(id);
+		let data = await db.deleteFromDB(updata.dbTable, updata.dbCol, updata.id);
 		if (data.rows.length > 0){
 			res.status(200).json({msg: "The item was deleted successfully"}).end();
 		}
@@ -59,7 +58,7 @@ router.post("/changeitemlist", async function(req,res,next){
 	let updata = req.body;
 	
 	try{
-		let data = await db.changeDB(updata.dbCol, updata.newDbText, updata.dbID, updata.id);
+		let data = await db.changeDB(updata.dbTable, updata.dbCol, updata.newDbText, updata.dbID, updata.id);
 		if (data.rows.length > 0){
 			res.status(200).json({msg: "The item was updated successfully"}).end();
 		}

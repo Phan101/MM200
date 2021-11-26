@@ -16,7 +16,13 @@ dbMethods.getAllLists = function(){
     let sql = "SELECT * FROM todolists"
     return pool.query(sql); //return the promise
 }
-
+//----------------------------------------------
+dbMethods.createNewList = function(header, user_id){
+    let sql = "INSERT INTO todolists (id, header, visible, user_id) VALUES(DEFAULT, $1, DEFAULT, $2) returning *";
+    let values = [header, user_id];
+    return pool.query(sql, values); 
+    
+}
 //----------------------------------------------
 //----------------------------------------------
 
@@ -27,13 +33,6 @@ dbMethods.getAllListItems = function(){
     return pool.query(sql); //return the promise
 }
 //----------------------------------------------
-dbMethods.createNewList = function(header, user_id){
-    let sql = "INSERT INTO todolists (id, header, visible, user_id) VALUES(DEFAULT, $1, DEFAULT, $2) returning *";
-    let values = [header, user_id];
-    return pool.query(sql, values); 
-    
-}
-//----------------------------------------------
 dbMethods.createListItem = function(text, listeid){
     let sql = "INSERT INTO itemlists (itemid, listeid, text, done) VALUES(DEFAULT, $1, $2, DEFAULT) returning *";
     let values = [listeid, text];
@@ -41,19 +40,25 @@ dbMethods.createListItem = function(text, listeid){
     
 }
 //-----------------------------------------------
-dbMethods.deleteListItems = function(id){
+/*dbMethods.deleteListItems = function(id){
     let sql = "DELETE FROM itemlists WHERE itemid = $1 RETURNING *";
     let values = [id];
     return pool.query(sql, values);//return the promise
-}
+}*/
 //-----------------------------------------------
 
 //----------------------------------------------
 //----------------------------------------------
+dbMethods.deleteFromDB = function(dbTable, dbCol, inpId){
+    let sql = `DELETE FROM ${dbTable} WHERE ${dbCol} = $1 RETURNING *`;
+    let values = [inpId];
+    return pool.query(sql, values);//return the promise
+}
 
-dbMethods.changeDB = function(dbCol, newDbValue, dbID, id){
-    let sql = `UPDATE itemlists SET ${dbCol} = $1 WHERE ${dbID} = $2 RETURNING *`;
-    let values = [newDbValue, id];
+//----------------------------------------------
+dbMethods.changeDB = function(dbTable, dbCol, newDbValue, dbID, inpId){
+    let sql = `UPDATE ${dbTable} SET ${dbCol} = $1 WHERE ${dbID} = $2 RETURNING *`;
+    let values = [newDbValue, inpId];
     return pool.query(sql,values);//return the promise
 }
 
