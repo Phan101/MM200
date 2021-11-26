@@ -39,17 +39,15 @@ router.post("/blogposts", protect, async function(req,res,next){
 		next(err);
 	}
 });
-
 router.delete("/itemlist", protect, async function(req, res, next){
 	let updata = req.body;
-	let id = updata.id;
 	try{
-		let data = await db.deleteListItems(id);
+		let data = await db.deleteFromDB(updata.dbTable, updata.dbCol, updata.id);
 		if (data.rows.length > 0){
-			res.status(200).json({msg: "The blogpost was deleted successfully"}).end();
+			res.status(200).json({msg: "The item was deleted successfully"}).end();
 		}
 		else{
-			throw "The blogpost couldn't be deleted";
+			throw "The item couldn't be deleted";
 		}
 	}
 	catch (err){
@@ -57,19 +55,37 @@ router.delete("/itemlist", protect, async function(req, res, next){
 	}
 });
 
-router.post("/itemlist", async function(req,res,next){
+router.post("/changeitemlist", async function(req,res,next){
 	let updata = req.body;
 	
 	try{
-		let data = await db.changeDB(updata.dbCol, updata.newDbText, updata.dbID, updata.id);
+		let data = await db.changeDB(updata.dbTable, updata.dbCol, updata.newDbText, updata.dbID, updata.id);
 		if (data.rows.length > 0){
-			res.status(200).json({msg: "The blogpost was updated successfully"}).end();
+			res.status(200).json({msg: "The item was updated successfully"}).end();
 		}
 		else{
-			throw "The blogpost couldn't be updated";
+			throw "The item couldn't be updated";
 		}
 	}catch (err){
 
+	}
+});
+
+router.post("/moreLists", async function(req, res, next) {
+	let updata = req.body;
+    try{
+        let data = await db.createNewList(updata.heading, updata.userid);
+		if (data.rows.length > 0){
+			res.status(200).json({msg: "The list was created successfully"}).end();
+		}
+		else{
+			throw "The list couldn't be created";
+		}
+        
+        res.status(200).send("the blogpost was created successfully").end();
+	}
+	catch(err){
+		next(err);
 	}
 });
 
