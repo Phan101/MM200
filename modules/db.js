@@ -27,6 +27,13 @@ dbMethods.getAllListItems = function(){
     return pool.query(sql); //return the promise
 }
 //----------------------------------------------
+dbMethods.createNewList = function(header, user_id){
+    let sql = "INSERT INTO todolists (id, header, visible, user_id) VALUES(DEFAULT, $1, DEFAULT, $2) returning *";
+    let values = [header, user_id];
+    return pool.query(sql, values); 
+    
+}
+//----------------------------------------------
 dbMethods.createListItem = function(text, listeid){
     let sql = "INSERT INTO itemlists (itemid, listeid, text, done) VALUES(DEFAULT, $1, $2, DEFAULT) returning *";
     let values = [listeid, text];

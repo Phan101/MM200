@@ -71,4 +71,22 @@ router.post("/changeitemlist", async function(req,res,next){
 	}
 });
 
+router.post("/moreLists", async function(req, res, next) {
+	let updata = req.body;
+    try{
+        let data = await db.createNewList(updata.heading, updata.userid);
+		if (data.rows.length > 0){
+			res.status(200).json({msg: "The list was created successfully"}).end();
+		}
+		else{
+			throw "The list couldn't be created";
+		}
+        
+        res.status(200).send("the blogpost was created successfully").end();
+	}
+	catch(err){
+		next(err);
+	}
+});
+
 module.exports = router;
