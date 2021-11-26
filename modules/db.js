@@ -11,57 +11,79 @@ const pool = new pg.Pool({
 let dbMethods = {}; //create empty object
 
 //----------------------------------------------
-dbMethods.getAllBlogPosts = function(){
-    let sql = "SELECT * FROM itemlists"
+//----------------------------------------------
+dbMethods.getAllLists = function(){
+    let sql = "SELECT * FROM todolists"
     return pool.query(sql); //return the promise
 }
 
 //----------------------------------------------
-dbMethods.createBlogPosts = function(heading, blogtext, userid){
-    let sql = "INSERT INTO itemlists (id, date, heading, blogtext, userid) VALUES(DEFAULT, DEFAULT, $1, $2, $3) returning *";
-	let values = [heading, blogtext, userid];
-    return pool.query(sql, values); //return the promise
+//----------------------------------------------
+
+//----------------------------------------------
+//----------------------------------------------
+dbMethods.getAllListItems = function(){
+    let sql = "SELECT * FROM itemlists";
+    return pool.query(sql); //return the promise
+}
+//----------------------------------------------
+dbMethods.createNewList = function(header, user_id){
+    let sql = "INSERT INTO todolists (id, header, visible, user_id) VALUES(DEFAULT, $1, DEFAULT, $2) returning *";
+    let values = [header, user_id];
+    return pool.query(sql, values); 
+    
+}
+//----------------------------------------------
+dbMethods.createListItem = function(text, listeid){
+    let sql = "INSERT INTO itemlists (itemid, listeid, text, done) VALUES(DEFAULT, $1, $2, DEFAULT) returning *";
+    let values = [listeid, text];
+    return pool.query(sql, values); 
+    
 }
 //-----------------------------------------------
-dbMethods.deleteBlogPosts = function(id){
+dbMethods.deleteListItems = function(id){
     let sql = "DELETE FROM itemlists WHERE itemid = $1 RETURNING *";
     let values = [id];
     return pool.query(sql, values);//return the promise
 }
+//-----------------------------------------------
+dbMethods.changeListItem = function(dbCol, newDbValue, itemID){
+    let sql = `UPDATE itemlists SET ${dbCol} = $1 WHERE itemid = $2 RETURNING *`;
+    let values = [newDbValue, itemID];
+    return pool.query(sql,values);//return the promise
+}
+//----------------------------------------------
+//----------------------------------------------
 
-//--------
+
+
+
+//----------------------------------------------
+//----------------------------------------------
 dbMethods.getAllUsers = function() {
     let sql = "SELECT id, username, password, salt FROM users";
     return pool.query(sql); //return the promise
 }
-//--------
+//----------------------------------------------
 dbMethods.getUser = function(username) {
     let sql = "SELECT * FROM users WHERE username = $1";
     let values = [username]; 
     return pool.query(sql, values);
 }
-//--------
+//----------------------------------------------
 dbMethods.createUser = function(username, password, salt) {
     let sql = "INSERT INTO users (id, username, password, salt) VALUES(DEFAULT, $1, $2, $3) returning *";
     let values = [username, password, salt];
     return pool.query(sql, values);
 }
-//--------
+//----------------------------------------------
 dbMethods.deleteUser = function(id) {
     let sql = "DELETE FROM users WHERE id = $1 RETURNING *";
     let values = [id];
     return pool.query(sql, values);
 }
-//--------
+//----------------------------------------------
+//----------------------------------------------
 
-dbMethods.getAllLists = function(){
-    let sql = "SELECT * FROM todolists"
-    return pool.query(sql); //return the promise
-}
-dbMethods.getAllListItems = function(){
-    let sql = "SELECT * FROM itemlists";
-    return pool.query(sql); //return the promise
-}
-//--------
 // export dbMethods---------------------------------
 module.exports = dbMethods;
