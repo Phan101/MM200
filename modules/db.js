@@ -23,7 +23,7 @@ dbMethods.getAllLists = function(){
 //----------------------------------------------
 //----------------------------------------------
 dbMethods.getAllListItems = function(){
-    let sql = "SELECT * FROM itemlists";
+    let sql = "SELECT * FROM itemlists ORDER BY itemid";
     return pool.query(sql); //return the promise
 }
 //----------------------------------------------
