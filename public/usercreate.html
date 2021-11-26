@@ -36,7 +36,7 @@
                 let data = await response.json();
 
                 if(response.status != 200){
-                    throw data.error;
+                    throw data.error;;
                 }
                 txtResult.innerHTML = data.msg
             }

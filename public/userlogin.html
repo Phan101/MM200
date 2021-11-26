@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">    
     <title>login</title>
-    <link rel="stylesheet" type='text/css' href="/css/stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="/css/stylesheet.css">
 </head>
 <body> 
 
@@ -14,8 +14,9 @@
         <input id="inpUsername" type="text" placeholder="Username"/> <br>
         <input id="inpPassword" type="text" placeholder="Password"/> <br><br>
     
-        <button id="btnLogin">Logg inn</button><br>
-        <h3 id="txtResult">:D</h3>
+        <button id="btnLogin">Logg inn</button>
+        <button id="btnSignUp">Sign up</button><br>
+        <h3 id="txtResult"></h3>
     </div>
     <!------------- JavaScript --------------->
     <script>
@@ -26,7 +27,7 @@
 
         // Skip login if token is stored.
           if (localStorage.token){
-            window.location.href = "/userlist.html";
+            window.location.href = "/todoLists.html";
         }
         
  
@@ -44,13 +45,12 @@
                 let data = await response.json();
 
                 if(response.status != 200){
-                    throw data.error;
+                    throw data.error;;
                 }
                 txtResult.innerHTML = data.msg;
                 localStorage.setItem("token", data.token);
-
-                //må endre userlist til /todolist.html(?)
-                window.location.href = "/userlist.html";
+                
+                window.location.href = "/todoLists.html";
             }
             catch(err){
                 console.log(err);
