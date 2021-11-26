@@ -22,23 +22,23 @@ router.get("/itemlist", protect, async function(req, res, next) {
 		next(err);
 	}
 });
-router.post("/blogposts", protect, async function(req,res,next){
+router.post("/newitemlist", protect, async function(req,res,next){
 	let updata = req.body;
-	let userid = res.locals.userid;
 
 	try{
-		let data = await db.changeDB(updata.heading, updata.blogtext, userid);
+		let data = await db.createListItem(updata.text, updata.listeid);
 
 		if(data.rows.length > 0){
-			res.status(200).json({msg: "the blogpost was created successfully"}).end();
+			res.status(200).json({msg: "the item was created successfully"}).end();
 		}else{
-			throw "the blogpost couldn't be created"
+			throw "the item couldn't be created"
 		}
 	}
 	catch(err){
 		next(err);
 	}
 });
+
 router.delete("/itemlist", protect, async function(req, res, next){
 	let updata = req.body;
 	try{
@@ -70,7 +70,6 @@ router.post("/changeitemlist", async function(req,res,next){
 
 	}
 });
-
 router.post("/moreLists", async function(req, res, next) {
 	let updata = req.body;
     try{
@@ -88,5 +87,4 @@ router.post("/moreLists", async function(req, res, next) {
 		next(err);
 	}
 });
-
 module.exports = router;

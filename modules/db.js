@@ -40,11 +40,11 @@ dbMethods.createListItem = function(text, listeid){
     
 }
 //-----------------------------------------------
-/*dbMethods.deleteListItems = function(id){
+dbMethods.deleteListItems = function(id){
     let sql = "DELETE FROM itemlists WHERE itemid = $1 RETURNING *";
     let values = [id];
     return pool.query(sql, values);//return the promise
-}*/
+}
 //-----------------------------------------------
 
 //----------------------------------------------
@@ -54,8 +54,6 @@ dbMethods.deleteFromDB = function(dbTable, dbCol, inpId){
     let values = [inpId];
     return pool.query(sql, values);//return the promise
 }
-
-//----------------------------------------------
 dbMethods.changeDB = function(dbTable, dbCol, newDbValue, dbID, inpId){
     let sql = `UPDATE ${dbTable} SET ${dbCol} = $1 WHERE ${dbID} = $2 RETURNING *`;
     let values = [newDbValue, inpId];

@@ -21,8 +21,7 @@
         let container = document.getElementById("container");
         let newItemBox = document.getElementById("newItemBox");
         let submitListItemBtn = document.getElementById("submitListItem");
-
-
+        
         function addNewListItem(listID) {
             
             let inpNewListItem = document.getElementById("newListItem");
@@ -62,7 +61,6 @@
                     container.appendChild(listdiv);
                      //new item button
                     let newItemBtn = document.createElement("button");
-                    
                     let btnStates = {clicked: false};
                     newItemBtn.innerHTML = "new item";
                     listdiv.appendChild(newItemBtn);
@@ -81,7 +79,7 @@
                             btnStates.clicked = false;
                         }
                     });
-                            
+                         
                     
                      //#new item  button
                     for (let itemvalue of itemsData){
@@ -102,13 +100,14 @@
                                 deleteListItem(itemvalue.itemid);
                             });
                             
+                            //listItemDiv.insertBefore(delbtn, listItemDiv.lastElementChild);
+                            //listdiv.appendChild(newItemBtn);
                             listItemDiv.appendChild(delbtn);
-                            // # delete button
 
+                            // # delete button
                             //<br>-tag
                             let breakTag = document.createElement("br");
                             listItemDiv.appendChild(breakTag);
-
                             //edit button
                             let editBtn = document.createElement("button");
                             editBtn.innerHTML = "Edit";

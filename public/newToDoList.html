@@ -3,31 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+    <link rel="shortcut icon" href="#">
     <title>blogpostcreate</title>
 </head>
 <body> 
 
     <!----------- HTML-elements -------------->
-    <a href="index.html">Home</a> 
+    <a href="index.html">Home</a> <br>
     <input id="inpHeading" type="text" /> <br>
-    <textarea id="inpBlogtext" cols="80" rows="10"></textarea><br>
     <button id="btnCreate">Create Post</button><br>
     <h3 id="txtResult">Result...</h3>
         
     <!------------- JavaScript --------------->
     <script>
         let inpHeading = document.getElementById("inpHeading");
-        let inpBlogtext = document.getElementById("inpBlogtext");
         let btnCreate = document.getElementById("btnCreate");
         let txtResult = document.getElementById("txtResult");
  
         btnCreate.addEventListener("click", async function(evt){
-            let url = "/blogposts";
-
+            let itemUrl = "/itemlist";
+            let listUrl = "/moreLists";
+            let token = localStorage.getItem("token")
             let updata = {
                 heading: inpHeading.value,
-                blogtext: inpBlogtext.value
-            }
+                userid: 1
+            };
             let token = localStorage.getItem("token");
             let cfg = {
                 method: "POST",
@@ -36,10 +36,10 @@
                     "authorization": token
                 },
                 body: JSON.stringify(updata)
-            }
+            };
 
             try{
-                let response = await fetch(url, cfg);
+                let response = await fetch(listUrl, cfg);
                 let data = await response.json();
 
                 if(response.status != 200){
