@@ -26,7 +26,7 @@ router.post("/blogposts", async function(req,res,next){
 	let userid = res.locals.userid;
 
 	try{
-		let data = await db.createListItem(updata.heading, updata.blogtext, userid);
+		let data = await db.changeDB(updata.heading, updata.blogtext, userid);
 
 		if(data.rows.length > 0){
 			res.status(200).json({msg: "the blogpost was created successfully"}).end();
@@ -60,7 +60,7 @@ router.post("/itemlist", async function(req,res,next){
 	let updata = req.body;
 	
 	try{
-		let data = await db.changeListItem(updata.dbCol, updata.newDbText, updata.id);
+		let data = await db.changeDB(updata.dbCol, updata.newDbText, updata.dbID, updata.id);
 		if (data.rows.length > 0){
 			res.status(200).json({msg: "The blogpost was updated successfully"}).end();
 		}

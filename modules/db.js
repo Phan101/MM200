@@ -40,16 +40,15 @@ dbMethods.deleteListItems = function(id){
     return pool.query(sql, values);//return the promise
 }
 //-----------------------------------------------
-dbMethods.changeListItem = function(dbCol, newDbValue, itemID){
-    let sql = `UPDATE itemlists SET ${dbCol} = $1 WHERE itemid = $2 RETURNING *`;
-    let values = [newDbValue, itemID];
+
+//----------------------------------------------
+//----------------------------------------------
+
+dbMethods.changeDB = function(dbCol, newDbValue, dbID, id){
+    let sql = `UPDATE itemlists SET ${dbCol} = $1 WHERE ${dbID} = $2 RETURNING *`;
+    let values = [newDbValue, id];
     return pool.query(sql,values);//return the promise
 }
-//----------------------------------------------
-//----------------------------------------------
-
-
-
 
 //----------------------------------------------
 //----------------------------------------------
