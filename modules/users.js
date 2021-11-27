@@ -2,6 +2,7 @@ const express = require("express");
 const db = require("./db.js");
 const authUtils = require("./auth_utils.js");
 const router = express.Router();
+const protect = require("./auth.js");
 
 // endpoints ----------------------
 
@@ -87,6 +88,24 @@ router.post("/users", async function(req, res, next){
 router.delete("/users", async function(req, res, next){
     res.status(200).send("Hello from DELETE - /users").end();
 })
+
+
+// change a user ------------
+router.post("/users", protect, async function(req,res,next){
+	let updata = req.body;
+	
+	try{
+		let data = await db.changeDB(updata.dbTable, updata.dbCol, updata.newDbText, updata.dbID, updata.id);
+		if (data.rows.length > 0){
+			res.status(200).json({msg: "The item was updated successfully"}).end();
+		}
+		else{
+			throw "The item couldn't be updated";
+		}
+	}catch (err){
+
+	}
+});
 
 // ----
 module.exports = router;

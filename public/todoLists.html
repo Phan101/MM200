@@ -11,6 +11,7 @@
     <!----------- HTML-elements -------------->
     <a href="index.html">Home</a> 
     <button id="logOut">Logout</button>
+    <button id="yourProfile">Your profile</button>
     <div id="container"></div>
     <div id="newItemBox">
         <input id="newListItem" type="text" placeholder="Write a new item to the list">
@@ -240,7 +241,7 @@
         }
         showAllToDoLists();
 
-        document.getElementById("logOut").addEventListener("click", async function(evt){
+        /*document.getElementById("logOut").addEventListener("click", async function(evt){
         let url = "/users";
         try{
             let response = await fetch(url);
@@ -255,6 +256,15 @@
         catch(err){
                 console.log(err);
             }
+    });*/
+
+    document.getElementById("logOut").addEventListener("click", function(evt){
+        localStorage.clear();
+        window.location.href = "/userlogin.html";
+    });
+
+    document.getElementById("yourProfile").addEventListener("click", function(evt){
+        window.location.href = "/userprofile.html";
     });
 
     </script>
