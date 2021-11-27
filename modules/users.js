@@ -91,8 +91,9 @@ router.delete("/users", async function(req, res, next){
 
 
 // change a user ------------
-router.post("/users", protect, async function(req,res,next){
+router.post("/changeusername", async function(req,res,next){
 	let updata = req.body;
+    console.log(updata);
 	
 	try{
 		let data = await db.changeDB(updata.dbTable, updata.dbCol, updata.newDbText, updata.dbID, updata.id);
