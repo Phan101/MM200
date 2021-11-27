@@ -114,8 +114,8 @@
 
                             editBtn.addEventListener("click", function(evt){
                                 let originalText = itemvalue.text;
-            
                                 if (itemText.innerHTML === originalText) {
+                                   
                                     let inputBox = document.createElement("input");
                                     inputBox.type = "text";
                                     inputBox.value = itemText.innerHTML;
@@ -143,7 +143,7 @@
         //add new list item
         async function newListItem(itemText, listID){
             let url = "/newitemlist";
-
+            let token = localStorage.getItem("token")
             let updata = {
                 text: itemText, 
                 listeid: listID
@@ -173,10 +173,11 @@
         }
         //editBox
         async function editListItem(itemID, itemText){
+            
             let url = "/changeitemlist";
-
+            let token = localStorage.getItem("token");
             let updata = {
-                dbTable: "itemlist",
+                dbTable: "itemlists",
                 dbCol: "text",
                 newDbText: itemText,
                 dbID: "itemid",

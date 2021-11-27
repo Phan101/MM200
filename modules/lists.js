@@ -55,7 +55,7 @@ router.delete("/itemlist", protect, async function(req, res, next){
 	}
 });
 
-router.post("/changeitemlist", async function(req,res,next){
+router.post("/changeitemlist", protect, async function(req,res,next){
 	let updata = req.body;
 	
 	try{
@@ -67,7 +67,7 @@ router.post("/changeitemlist", async function(req,res,next){
 			throw "The item couldn't be updated";
 		}
 	}catch (err){
-
+		next(err);
 	}
 });
 router.post("/moreLists", async function(req, res, next) {
