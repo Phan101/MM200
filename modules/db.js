@@ -13,7 +13,7 @@ let dbMethods = {}; //create empty object
 //----------------------------------------------
 //----------------------------------------------
 dbMethods.getAllLists = function(){
-    let sql = "SELECT * FROM todolists"
+    let sql = "SELECT * FROM todolists ORDER BY id"
     return pool.query(sql); //return the promise
 }
 //----------------------------------------------
