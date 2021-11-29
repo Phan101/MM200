@@ -24,6 +24,7 @@
         let inpPassword = document.getElementById("inpPassword");
         let btnLogin = document.getElementById("btnLogin");
         let txtResult = document.getElementById("txtResult");
+        let btnSignUp = document.getElementById("btnSignUp");
 
         // Skip login if token is stored.
           if (localStorage.token){
@@ -56,6 +57,31 @@
                 console.log(err);
                 txtResult.innerHTML = "Something went wrong - check the console window";
                 
+            }
+        });
+
+        btnSignUp.addEventListener("click", async function(evt){
+            let url = "/users";
+            let credString = createCredentialString(inpUsername.value, inpPassword.value);
+
+            let cfg = {
+                method: "POST",
+                headers: {"authorization":credString}
+            }
+
+            try {
+                let response = await fetch(url, cfg);
+                let data = await response.json();
+
+                if(response.status !== 200){
+                    throw data.error;
+                }
+
+                txtResult.innerHTML = data.msg;
+            }
+            catch (err){
+                console.log(err);
+                txtResult.innerHTML = "Something went wrong - check the console window";
             }
         });
         //---------------------------

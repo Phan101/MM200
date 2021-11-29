@@ -37,8 +37,8 @@
                 let response = await fetch(url, cfg);
                 let data = await response.json();
 
-                if(response.status != 200){
-                    throw data.error;;
+                if(response.status !== 200){
+                    throw data.error;
                 }
                 txtResult.innerHTML = data.msg
             }
