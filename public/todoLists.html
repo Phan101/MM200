@@ -23,55 +23,7 @@
         let submitListItemBtn = document.getElementById("submitListItem");
         let btnShowNewList = document.getElementById("btnNewList");
         let divNewList = document.getElementById("newItemDiv");
-        btnShowNewList.addEventListener("click", function() {
-        //new list input box 
-            let inpNewList = document.createElement("input");
-            divNewList.appendChild(inpNewList);
-        //#new list input box
-
-        //new list button
-            let btnAddNewList = document.createElement("button");
-            btnAddNewList.innerHTML = "Add new list";
-            divNewList.appendChild(btnAddNewList);
-
-            btnAddNewList.addEventListener("click", async function(evt){
-                let url = "/list";
-                let updata = {
-                    heading: inpNewList.value,
-                    userid: 1
-                };
-                let token = localStorage.getItem("token");
-                let cfg = {
-                    method: "POST",
-                    headers: {
-                        "content-type":"application/json",
-                        "authorization": token
-                    },
-                    body: JSON.stringify(updata)
-                };
-
-                try{
-                    let response = await fetch(url, cfg);
-                    let data = await response.json();
-
-                    if(response.status != 200){
-                        throw data.error;
-                    }
-                    btnShowNewList.hidden = false;
-                    inpNewList.remove();
-                    btnAddNewList.remove();
-                    showAllToDoLists(); //refresh the list
-                }
-                catch(err){
-                    console.log(err);
-                }
-
-            });
-        //#new list button
-
-            btnShowNewList.hidden = true;
-
-        });
+        
         async function showAllToDoLists() {
 
             let itemUrl = "/itemlist";
@@ -108,6 +60,17 @@
                     container.appendChild(listdiv);
                 //#create list div
                 
+                //share/unshare
+                    let chkVisible = document.createElement("input");
+                    chkVisible.type = "checkbox";
+                    chkVisible.checked = listvalue.visible;
+                    listdiv.insertBefore(chkVisible, listdiv.lastElementChild);
+
+                    chkVisible.addEventListener("click", function() {
+                        changeAvailability(listvalue.id, chkVisible.checked)
+                    })
+                //#share/unshare
+
                 //edit list button
                     let btnEditList = document.createElement("button");
                     btnEditList.innerHTML = "Edit";
@@ -225,6 +188,94 @@
                 console.log(error);
             }
         }
+        btnShowNewList.addEventListener("click", function() {
+        //new list input box 
+            let inpNewList = document.createElement("input");
+            divNewList.appendChild(inpNewList);
+        //#new list input box
+
+        //new list button
+            let btnAddNewList = document.createElement("button");
+            btnAddNewList.innerHTML = "Add new list";
+            divNewList.appendChild(btnAddNewList);
+
+            btnAddNewList.addEventListener("click", async function(evt){
+                let url = "/list";
+                let updata = {
+                    heading: inpNewList.value,
+                    userid: 1
+                };
+                let token = localStorage.getItem("token");
+                let cfg = {
+                    method: "POST",
+                    headers: {
+                        "content-type":"application/json",
+                        "authorization": token
+                    },
+                    body: JSON.stringify(updata)
+                };
+
+                try{
+                    let response = await fetch(url, cfg);
+                    let data = await response.json();
+
+                    if(response.status != 200){
+                        throw data.error;
+                    }
+                    btnShowNewList.hidden = false;
+                    inpNewList.remove();
+                    btnAddNewList.remove();
+                    showAllToDoLists(); //refresh the list
+                }
+                catch(err){
+                    console.log(err);
+                }
+
+            });
+        //#new list button
+
+            btnShowNewList.hidden = true;
+
+        });
+        
+
+    //share/unshare
+        async function changeAvailability(listID,available) {
+            let url = "/changeitemlist";
+            let token = localStorage.getItem("token");
+            let updata = {
+                dbTable: "todolists",
+                dbCol: "visible",
+                newDbText: available,
+                dbID: "id",
+                id: listID
+            }
+
+            let cfg = {
+                method: "POST",
+                headers: {
+                    "content-type":"application/json",
+                    "authorization":token
+                },
+                body: JSON.stringify(updata)
+            }
+            try{
+                
+                let response = await fetch(url, cfg);
+                let data = await response.json();
+
+                if(response.status != 200){
+                    throw data.error
+                }
+
+                showAllToDoLists(); //refresh the list
+            }
+            catch(error){
+                console.log(error);
+            }     
+        }
+    //#share/unshare
+
     //delete all list items
         async function deleteAllListItems(listID, itemsData) {
             for (let itemvalue of itemsData){
