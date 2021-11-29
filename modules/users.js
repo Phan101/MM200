@@ -47,7 +47,7 @@ router.post("/users/login", async function(req, res, next){
 })
 
 // list all users ---------------------
-router.get("/users", async function(req, res, next){
+router.get("/users", protect, async function(req, res, next){
     try {
         let data = await db.getAllUsers();
         res.status(200).json(data.rows).end();
@@ -85,9 +85,21 @@ router.post("/users", async function(req, res, next){
 })
 
 // delete a user ---------------------
-router.delete("/users", async function(req, res, next){
-    res.status(200).send("Hello from DELETE - /users").end();
-})
+router.delete("/deleteuser", protect, async function(req, res, next){
+	let updata = req.body;
+	try{
+		let data = await db.deleteFromDB(updata.dbTable, updata.dbCol, updata.id);
+		if (data.rows.length > 0){
+			res.status(200).json({msg: "The user was deleted successfully"}).end();
+		}
+		else{
+			throw "The user couldn't be deleted";
+		}
+	}
+	catch (err){
+		next(err);
+	}
+});
 
 
 // change a user ------------

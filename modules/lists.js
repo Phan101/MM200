@@ -70,7 +70,7 @@ router.post("/changeitemlist", protect, async function(req,res,next){
 		next(err);
 	}
 });
-router.post("/moreLists", async function(req, res, next) {
+router.post("/moreLists", protect, async function(req, res, next) {
 	let updata = req.body;
     try{
         let data = await db.createNewList(updata.heading, updata.userid);
