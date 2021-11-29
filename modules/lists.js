@@ -77,7 +77,6 @@ router.get("/itemlist", protect, async function(req, res, next) {
 		next(err);
 	}
 });
-
 router.post("/newitemlist", protect, async function(req,res,next){
 	let updata = req.body;
 

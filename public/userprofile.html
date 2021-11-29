@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile</title>
+    <script src="js/security.js"></script>
+  </head>
+  <body>
+    <!----------- HTML-elements -------------->
+    <a href="userlogin.html">Back</a>
+    <button id="logOut">Logout</button>
+    <h1>Your Profile</h1>
+    <button id="changeUsername">Change Username</button>
+    <button id="changePassword">Change Password</button>
+    <button id="deleteUser" onclick="confirmDelete()">Delete</button>
+    <h3 id="txtResult"></h3>
+
+    <hr />
+    <div id="container"></div>
+
+    <!------------- JavaScript --------------->
+    <script>
+      let container = document.getElementById("container");
+      let txtResult = document.getElementById("txtResult");
+      let changeUsername = [];
+
+      document
+        .getElementById("changeUsername")
+        .addEventListener("click", async function (evt) {
+          let url = "/users";
+          let token = localStorage.getItem("token");
+          let cfg = {
+            method: "GET",
+            headers: { authorization: token },
+          };
+          try {
+            let response = await fetch(url, cfg);
+            let data = await response.json();
+
+            if (response.status != 200) {
+              throw data.error;
+            }
+
+            let allUsers = [];
+            for (value of data){
+                allUsers.push(value);
+              };
+
+            container.innerHTML = ""; //delete previous content
+
+            let profileDiv = document.createElement("div");
+
+            profileDiv.innerHTML = `<h2><b>Change Username:</b></h2>
+                  <h3>Type in your old username</h3>
+                  <input id='inpUsername' type='text' placeholder='Old Username'/><br>
+                  <h3>Type in your password</h3>
+                  <input id='inpPassword' type='text' placeholder='Password'/><br><br>`;
+            container.appendChild(profileDiv);
+            let inpUsername = document.getElementById("inpUsername");
+            let inpPassword = document.getElementById("inpPassword");
+            //new item button
+            let changeBtn = document.createElement("button");
+            let btnStates = { clicked: false };
+            changeBtn.innerHTML = "Change";
+            profileDiv.appendChild(changeBtn);
+
+            changeBtn.addEventListener("click", async function (evt) {
+              let url = "/users/login";
+              let credString = createCredentialString(
+                inpUsername.value,
+                inpPassword.value
+              );
+
+
+              let cfg = {
+                method: "POST",
+                headers: { authorization: credString },
+              };
+
+
+              try {
+                let response = await fetch(url, cfg);
+                let data = await response.json();
+
+                let inpId;
+
+                for(let i=0; i<allUsers.length; i++){
+                  if(allUsers[i].username === inpUsername.value){
+                    inpId = allUsers[i].id;
+                  }
+                }
+
+                if(inpId != localStorage.idAuth){
+                  console.log("feil")
+                  throw "Invalid username";
+                }
+                
+                if (response.status != 200) {
+                  throw data.error;
+                }
+
+
+
+                
+                //container.innerHTML = ""; //delete previous content
+                profileDiv.innerHTML += "<h3>Type in your new username</h3>";
+                profileDiv.innerHTML +=
+                  "<input id='newUsername' type='text' placeholder='New Username'/><br><br>";
+
+                let changeBtn = document.createElement("button");
+                let btnStates = { clicked: false };
+                changeBtn.innerHTML = "Change";
+                profileDiv.appendChild(changeBtn);
+
+                changeBtn.addEventListener("click", async function (evt) {
+                  let newUsername = document.getElementById("newUsername");
+                  changeUsername.value = newUsername.value;
+                  changeUsername.id = localStorage.idAuth;
+                  
+                  editUsername();
+                  
+                });
+              } catch (err) {
+                console.log(err);
+                txtResult.innerHTML =
+                  "Something went wrong - check the console window";
+              }
+            });
+          } catch (error) {
+            console.log(error);
+          }
+        });
+
+      async function editUsername() {
+        let url = "/changeusername";
+        let token = localStorage.getItem("token");
+        let updata = {
+          dbTable: "users",
+          dbCol: "username",
+          newDbText: changeUsername.value,
+          dbID: "id",
+          id: changeUsername.id,
+        };
+
+        let cfg = {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            authorization: token,
+          },
+          body: JSON.stringify(updata),
+        };
+        try {
+          let response = await fetch(url, cfg);
+          let data = await response.json();
+
+          if (response.status != 200) {
+            throw data.error;
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      function confirmDelete(){
+        let confirmUserDelete = confirm("Are you sure you want to delete user?");
+        if(confirmUserDelete){
+          deleteUser(localStorage.getItem("idAuth"));
+          localStorage.clear();
+          window.location.href = "userlogin.html";
+        }
+      }
+
+      async function deleteUser(listItemID) {
+        let url = "/deleteuser";
+        let token = localStorage.getItem("token");
+
+        let updata = {
+          dbTable: "users",
+          dbCol: "id",
+          id: listItemID,
+        };
+
+        let cfg = {
+          method: "DELETE",
+          headers: {
+            "content-type": "application/json",
+            authorization: token,
+          },
+          body: JSON.stringify(updata),
+        };
+
+        try {
+          let response = await fetch(url, cfg);
+          let data = await response.json();
+
+          if (response.status != 200) {
+            throw data.error;
+          }
+
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+       
+
+      document
+        .getElementById("changePassword")
+        .addEventListener("click", function (evt) {});
+
+      document
+        .getElementById("logOut")
+        .addEventListener("click", function (evt) {
+          localStorage.clear();
+          window.location.href = "/userlogin.html";
+        }); 
+
+      function createCredentialString(username, password) {
+        let combinedStr = `${username}:${password}`;
+        let b64Str = btoa(combinedStr);
+        return `basic ${b64Str}`;
+      }
+    </script>
+
+    <!---------------- CSS ------------------->
+    <style></style>
+  </body>
+</html>
