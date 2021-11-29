@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+    <link rel="shortcut icon" href="#">
+    <title>blogpostcreate</title>
+</head>
+<body> 
+
+    <!----------- HTML-elements -------------->
+    <a href="index.html">Home</a> <br>
+    <input id="inpHeading" type="text" /> <br>
+    <button id="btnCreate">Create Post</button><br>
+    <h3 id="txtResult">Result...</h3>
+        
+    <!------------- JavaScript --------------->
+    <script>
+        let inpHeading = document.getElementById("inpHeading");
+        let btnCreate = document.getElementById("btnCreate");
+        let txtResult = document.getElementById("txtResult");
+ 
+        btnCreate.addEventListener("click", async function(evt){
+            let itemUrl = "/itemlist";
+            let listUrl = "/moreLists";
+            let token = localStorage.getItem("token")
+            let updata = {
+                heading: inpHeading.value,
+                userid: 1
+            };
+            let token = localStorage.getItem("token");
+            let cfg = {
+                method: "POST",
+                headers: {
+                    "content-type":"application/json",
+                    "authorization": token
+                },
+                body: JSON.stringify(updata)
+            };
+
+            try{
+                let response = await fetch(listUrl, cfg);
+                let data = await response.json();
+
+                if(response.status != 200){
+                    throw data.error;
+                }
+                txtResult.innerHTML = data.msg
+            }
+            catch(err){
+                console.log(err);
+                txtResult.innerHTML = "Something went wrong - check the console window";
+            }
+        });
+    </script>
+
+    <!---------------- CSS ------------------->
+    <style>        
+
+    </style>
+
+</body>
+
+</html>
