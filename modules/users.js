@@ -88,5 +88,21 @@ router.delete("/users", async function(req, res, next){
     res.status(200).send("Hello from DELETE - /users").end();
 })
 
+router.post("/changeusername", async function(req,res,next){
+    let updata = req.body;
+    console.log(updata);
+
+    try{
+        let data = await db.changeDB(updata.dbTable, updata.dbCol, updata.newDbText, updata.dbID, updata.id);
+        if (data.rows.length > 0){
+            res.status(200).json({msg: "The item was updated successfully"}).end();
+        }
+        else{
+            throw "The item couldn't be updated";
+        }
+    }catch (err){
+
+    }
+});
 // ----
 module.exports = router;
