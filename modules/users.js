@@ -2,6 +2,7 @@ const express = require("express");
 const db = require("./db.js");
 const authUtils = require("./auth_utils.js");
 const router = express.Router();
+const protect = require("./auth.js");
 
 // endpoints ----------------------
 
@@ -29,7 +30,8 @@ router.post("/users/login", async function(req, res, next){
 
                 res.status(200).json({
                     msg: "The login was successful!",
-                    token: tok
+                    token: tok,
+                    userid: data.rows[0].id
                 }).end();
 
             }else{
@@ -84,9 +86,21 @@ router.post("/users", async function(req, res, next){
 })
 
 // delete a user ---------------------
-router.delete("/users", async function(req, res, next){
-    res.status(200).send("Hello from DELETE - /users").end();
-})
+router.delete("/deleteuser", protect, async function(req, res, next){
+    let updata = req.body;
+    try{
+        let data = await db.deleteFromDB(updata.dbTable, updata.dbCol, updata.id);
+        if (data.rows.length > 0){
+            res.status(200).json({msg: "The user was deleted successfully"}).end();
+        }
+        else{
+            throw "The user couldn't be deleted";
+        }
+    }
+    catch (err){
+        next(err);
+    }
+});
 
 router.post("/changeusername", async function(req,res,next){
     let updata = req.body;
