@@ -51,6 +51,7 @@
                 }
                 txtResult.innerHTML = data.msg;
                 localStorage.setItem("token", data.token);
+                localStorage.setItem("idAuth", data.userid);
                 
                 window.location.href = "/todoLists.html";
             }

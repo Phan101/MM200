@@ -13,7 +13,7 @@
     <h1>Your Profile</h1>
     <button id="changeUsername">Change Username</button>
     <button id="changePassword">Change Password</button>
-    <button id="deleteUser">Delete User</button>
+    <button id="deleteUser" onclick="confirmDelete()">Delete</button>
     <h3 id="txtResult"></h3>
 
     <hr />
@@ -24,31 +24,6 @@
       let container = document.getElementById("container");
       let txtResult = document.getElementById("txtResult");
       let changeUsername = [];
-      let deleteUsername = [];
-
-      getUsers();
-      async function getUsers() {
-        let url = "/users";
-        let token = localStorage.getItem("token");
-        let cfg = {
-          method: "GET",
-          headers: { authorization: token },
-        };
-        try {
-          let response = await fetch(url, cfg);
-          let data = await response.json();
-
-          if (response.status != 200) {
-            throw data.error;
-          }
-          let allUsers = [];
-          for (value of data) {
-            allUsers.push(value);
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      }
 
       document
         .getElementById("changeUsername")
@@ -66,6 +41,11 @@
             if (response.status != 200) {
               throw data.error;
             }
+
+            let allUsers = [];
+            for (value of data){
+                allUsers.push(value);
+              };
 
             container.innerHTML = ""; //delete previous content
 
@@ -92,23 +72,37 @@
                 inpPassword.value
               );
 
+
               let cfg = {
                 method: "POST",
                 headers: { authorization: credString },
               };
 
-              let allUsers = [];
-              for (value of data) {
-                allUsers.push(value);
-              }
 
               try {
                 let response = await fetch(url, cfg);
                 let data = await response.json();
 
+                let inpId;
+
+                for(let i=0; i<allUsers.length; i++){
+                  if(allUsers[i].username === inpUsername.value){
+                    inpId = allUsers[i].id;
+                  }
+                }
+
+                if(inpId != localStorage.idAuth){
+                  console.log("feil")
+                  throw "Invalid username";
+                }
+                
                 if (response.status != 200) {
                   throw data.error;
                 }
+
+
+
+                
                 //container.innerHTML = ""; //delete previous content
                 profileDiv.innerHTML += "<h3>Type in your new username</h3>";
                 profileDiv.innerHTML +=
@@ -119,17 +113,13 @@
                 changeBtn.innerHTML = "Change";
                 profileDiv.appendChild(changeBtn);
 
-                let newUsername = document.getElementById("newUsername");
                 changeBtn.addEventListener("click", async function (evt) {
-                  changeUsername = { value: "", id: "" };
+                  let newUsername = document.getElementById("newUsername");
                   changeUsername.value = newUsername.value;
-                  for (let i = 0; i < allUsers.length; i++) {
-                    if (allUsers[i].username === inpUsername.value) {
-                      changeUsername.id = allUsers[i].id;
-                    }
-                  }
-                  console.log(changeUsername);
+                  changeUsername.id = localStorage.idAuth;
+                  
                   editUsername();
+                  
                 });
               } catch (err) {
                 console.log(err);
@@ -173,68 +163,14 @@
         }
       }
 
-      document
-        .getElementById("deleteUser")
-        .addEventListener("click", async function (evt) {
-          container.innerHTML = ""; //delete previous content
-          let profileDiv = document.createElement("div");
-
-          profileDiv.innerHTML = `<h2><b>Are you sure you want to delete your account?<br>
-                    All the lists connected to this account will also be deleted:</b></h2>
-                  <h3>Type in your Username</h3>
-                  <input id='inpUsername' type='text' placeholder='Username'/><br>
-                  <h3>Type in your password</h3>
-                  <input id='inpPassword' type='text' placeholder='Password'/><br>
-                  <h3>Confirm your password</h3>
-                  <input id='inpPasswordConfirm' type='text' placeholder='Confirm Password'/><br><br>`;
-          container.appendChild(profileDiv);
-          let inpPassword = document.getElementById("inpPassword");
-          let inpPasswordConfirm =
-            document.getElementById("inpPasswordConfirm");
-          let changeBtn = document.createElement("button");
-          changeBtn.innerHTML = "Delete";
-          profileDiv.appendChild(changeBtn);
-
-          changeBtn.addEventListener("click", async function (evt) {
-            let credString = createCredentialString(inpUsername.value, inpPassword.value)
-            let url = "/users";
-            let token = localStorage.getItem("token");
-            let cfg = {
-              method: "GET",
-              headers: { authorization: token },
-            };
-            try {
-              let response = await fetch(url, cfg);
-              let data = await response.json();
-              let allUsers = [];
-              for (value of data) {
-                allUsers.push(value);
-              };
-              console.log(allUsers);
-              let testCredString = createCredentialString(allUsers[11].username,allUsers[11].password);
-              console.log(testCredString);
-              console.log(credString);
-              for (let i = 0; i < allUsers.length; i++) {
-                    if (allUsers[i].username === inpUsername.value) {
-                      deleteUsername.push(allUsers[i].username);
-                    }
-                  };
-              
-
-              if (response.status != 200) {
-                throw data.error;
-              }
-            } catch (error) {
-              console.log(error);
-            }
-            if (inpPassword.value == inpPasswordConfirm.value && inpPassword.value) {
-              
-               deleteUser(deleteUsername[0]);
-            } else {
-              console.log("må huske å legge inn feilmelding :D");
-            }
-          });
-        });
+      function confirmDelete(){
+        let confirmUserDelete = confirm("Are you sure you want to delete user?");
+        if(confirmUserDelete){
+          deleteUser(localStorage.getItem("idAuth"));
+          localStorage.clear();
+          window.location.href = "userlogin.html";
+        }
+      }
 
       async function deleteUser(listItemID) {
         let url = "/deleteuser";
@@ -242,7 +178,7 @@
 
         let updata = {
           dbTable: "users",
-          dbCol: "username",
+          dbCol: "id",
           id: listItemID,
         };
 
@@ -268,6 +204,8 @@
         }
       }
 
+       
+
       document
         .getElementById("changePassword")
         .addEventListener("click", function (evt) {});
@@ -277,7 +215,7 @@
         .addEventListener("click", function (evt) {
           localStorage.clear();
           window.location.href = "/userlogin.html";
-        });
+        }); 
 
       function createCredentialString(username, password) {
         let combinedStr = `${username}:${password}`;

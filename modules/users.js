@@ -30,7 +30,8 @@ router.post("/users/login", async function(req, res, next){
 
                 res.status(200).json({
                     msg: "The login was successful!",
-                    token: tok
+                    token: tok,
+                    userid: data.rows[0].id
                 }).end();
 
             }else{
@@ -50,6 +51,17 @@ router.post("/users/login", async function(req, res, next){
 router.get("/users", protect, async function(req, res, next){
     try {
         let data = await db.getAllUsers();
+        res.status(200).json(data.rows).end();
+    }
+    catch(err) {
+        next(err);
+    }
+})
+
+// list user ---------------------
+router.get("/user", protect, async function(req, res, next){
+    try {
+        let data = await db.getUser();
         res.status(200).json(data.rows).end();
     }
     catch(err) {
