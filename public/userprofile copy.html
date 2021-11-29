@@ -13,10 +13,10 @@
     <h1>Your Profile</h1>
     <button id="changeUsername">Change Username</button>
     <button id="changePassword">Change Password</button>
-    <button id="deleteUser" onclick="confirmDelete()">Delete User</button>
+    <button id="deleteUser" onclick="confirmDelete()">Delete</button>
     <h3 id="txtResult"></h3>
 
-    <hr/>
+    <hr />
     <div id="container"></div>
 
     <!------------- JavaScript --------------->
@@ -99,12 +99,17 @@
                 if (response.status != 200) {
                   throw data.error;
                 }
+
+
+
+                
                 //container.innerHTML = ""; //delete previous content
                 profileDiv.innerHTML += "<h3>Type in your new username</h3>";
                 profileDiv.innerHTML +=
                   "<input id='newUsername' type='text' placeholder='New Username'/><br><br>";
 
                 let changeBtn = document.createElement("button");
+                let btnStates = { clicked: false };
                 changeBtn.innerHTML = "Change";
                 profileDiv.appendChild(changeBtn);
 
@@ -128,7 +133,7 @@
         });
 
       async function editUsername() {
-        let url = "/changeuserinfo";
+        let url = "/changeusername";
         let token = localStorage.getItem("token");
         let updata = {
           dbTable: "users",
@@ -200,170 +205,10 @@
       }
 
        
-      document.getElementById("changePassword").addEventListener("click", async function (evt) {
-        let url = "/users";
-          let token = localStorage.getItem("token");
-          let cfg = {
-            method: "GET",
-            headers: { authorization: token },
-          };
-          try {
-            let response = await fetch(url, cfg);
-            let data = await response.json();
 
-            if (response.status != 200) {
-              throw data.error;
-            }
-
-            let allUsers = [];
-            for (value of data){
-                allUsers.push(value);
-              };
-
-            container.innerHTML = ""; //delete previous content
-
-            let profileDiv = document.createElement("div");
-
-            profileDiv.innerHTML = `<h2><b>Change Password:</b></h2>
-                  <h3>Type in your username</h3>
-                  <input id='inpUsername' type='text' placeholder='Username'/><br>
-                  <h3>Type in your old password</h3>
-                  <input id='inpPassword' type='text' placeholder='Old Password'/><br><br>`;
-            container.appendChild(profileDiv);
-            let inpUsername = document.getElementById("inpUsername");
-            let inpPassword = document.getElementById("inpPassword");
-
-            let verifyBtn = document.createElement("button");
-            verifyBtn.innerHTML = "Change Password";
-            profileDiv.appendChild(verifyBtn);
-
-            verifyBtn.addEventListener("click", async function (evt) {
-              let url = "/users/login";
-              let credString = createCredentialString(
-                inpUsername.value,
-                inpPassword.value
-              );
-
-              let cfg = {
-                method: "POST",
-                headers: { authorization: credString },
-              };
-              try {
-                let response = await fetch(url, cfg);
-                let data = await response.json();
-                let inpId;
-                let salt;
-                let username;
-                let password;
-                if (response.status != 200) {
-                  throw data.error;
-                }
-                for(let i=0; i<allUsers.length; i++){
-                  if(allUsers[i].username === inpUsername.value){
-                    inpId = allUsers[i].id;
-                    salt = allUsers[i].salt;
-                    username = allUsers[i].username;
-                    //password = allUsers[i].password;
-                  }
-                }
-
-                if(inpId != localStorage.idAuth){
-                  console.log("feil")
-                  throw "Invalid username";
-                }
-                console.log("riktig verifisering");
-                profileDiv.innerHTML += "<h3>Type in your new password</h3>";
-                profileDiv.innerHTML += "<input id='newPassword' type='text' placeholder='New Password'/><br><br>";
-
-                let changePWBtn = document.createElement("button");
-                changePWBtn.innerHTML = "Update password";
-                profileDiv.appendChild(changePWBtn);
-
-                changePWBtn.addEventListener("click", async function (evt) {
-                  let newPassword = document.getElementById("newPassword");
-                  let password = newPassword.value;
-                  let test = encryptNewPassword(inpId, username, password, salt);
-                  console.log(test);
-                });
-                
-              } catch (error) {
-            console.log(error);
-          }
-      });
-    } catch (error) {
-          console.log(error);
-        }
-    });
-
-    async function encryptNewPassword(inpId, username, password, salt){
-      let url = "/encryptpassword";
-            let credString = createCredentialString(username, password)
-            
-            let cfg = {
-                method: "POST",
-                headers: {"authorization":credString}
-            }
-            let updata = {
-            dbInp: inpId,
-            dbUsername: username,
-            dbPassword: password,
-            dbSalt: salt,
-        };
-
-            try{
-                let response = await fetch(url, cfg);
-                let data = await response.json();
-                console.log(data);
-                console.log(updata);
-                console.log(createCredentialString(password));
-                console.log(credString);
-
-                if(response.status !== 200){
-                    throw data.error;
-                }
-                txtResult.innerHTML = data.msg
-            }
-            catch(err){
-                console.log(err);
-                txtResult.innerHTML = "Something went wrong - check the console window";
-            }
-        };
-
-   async function createNewPassword(password, inpId){
-        let url = "/changeuserinfo";
-        let token = localStorage.getItem("token");
-
-        let updata = {
-          dbTable: "users",
-          dbCol: "password",
-          newDbText: password,
-          dbID: "id",
-          id: inpId,
-        };
-
-        let cfg = {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-            authorization: token,
-          },
-          body: JSON.stringify(updata),
-        };
-
-        try {
-          let response = await fetch(url, cfg);
-          let data = await response.json();
-
-          if (response.status != 200) {
-            throw data.error;
-          }
-
-        } catch (error) {
-          console.log(error);
-        }
-    }
-
-          
+      document
+        .getElementById("changePassword")
+        .addEventListener("click", function (evt) {});
 
       document
         .getElementById("logOut")

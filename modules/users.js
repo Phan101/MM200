@@ -98,23 +98,6 @@ router.post("/users", async function(req, res, next){
 
 // delete a user ---------------------
 router.delete("/deleteuser", protect, async function(req, res, next){
-    let updata = req.body;
-    try{
-        let data = await db.deleteFromDB(updata.dbTable, updata.dbCol, updata.id);
-        if (data.rows.length > 0){
-            res.status(200).json({msg: "The user was deleted successfully"}).end();
-        }
-        else{
-            throw "The user couldn't be deleted";
-        }
-    }
-    catch(err){
-        next(err);
-    }
-})
-
-// delete a user ---------------------
-router.delete("/deleteuser", protect, async function(req, res, next){
 	let updata = req.body;
 	try{
 		let data = await db.deleteFromDB(updata.dbTable, updata.dbCol, updata.id);
@@ -132,7 +115,7 @@ router.delete("/deleteuser", protect, async function(req, res, next){
 
 
 // change a user ------------
-router.post("/changeusername", async function(req,res,next){
+router.post("/changeuserinfo", async function(req,res,next){
 	let updata = req.body;
     console.log(updata);
 	
@@ -148,6 +131,33 @@ router.post("/changeusername", async function(req,res,next){
 
 	}
 });
+
+// encrypt a password --------------
+router.post("/encryptpassword", async function(req, res, next){
+
+    let credString = req.headers.authorization;
+    let cred = authUtils.decodeCred(credString);
+
+    if(cred.username === "" || cred.password === ""){
+        res.status(401).json({error: "No username or password"}).end();
+        return;
+    }
+
+    let hash = authUtils.createHash(cred.password);
+
+    try{
+        let data = await db.encryptPassword(cred.username, hash.value, hash.salt);
+
+        if(data.rows.length > 0){
+            res.status(200).json({msg: "The password was updated successfully"}).end();
+        } else {
+            throw "Could not update password";
+        }
+    }
+    catch(err){
+        next(err);
+    }
+})
 
 // ----
 module.exports = router;
