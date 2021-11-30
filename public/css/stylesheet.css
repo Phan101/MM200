@@ -76,6 +76,6 @@
 }
 
 /* CSS for userprofile */
-#profileDiv, #showPasswordDiv {
+#profileDiv, #changePasswordDiv {
     display: none;
 }
