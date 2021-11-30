@@ -6,6 +6,15 @@ const pool = new pg.Pool({
 	connectionString: connstring,
 	ssl:{rejectUnauthorized: false}
 });
+
+    const d = new Date();
+  let day = d.getDate();
+  let month = d.getMonth();
+  let year = d.getFullYear();
+  let lastLoginText = "Last login: " + day + "." + month + "." + year;
+ 
+
+
   
 // database methods ----------------------------
 let dbMethods = {}; //create empty object
@@ -13,17 +22,7 @@ let dbMethods = {}; //create empty object
 //----------------------------------------------
 //----------------------------------------------
 dbMethods.getAllLists = function(){
-    let sql = "SELECT * FROM todolists"
-    return pool.query(sql); //return the promise
-}
-
-//----------------------------------------------
-//----------------------------------------------
-
-//----------------------------------------------
-//----------------------------------------------
-dbMethods.getAllListItems = function(){
-    let sql = "SELECT * FROM itemlists";
+    let sql = "SELECT * FROM todolists ORDER BY id"
     return pool.query(sql); //return the promise
 }
 //----------------------------------------------
@@ -32,6 +31,15 @@ dbMethods.createNewList = function(header, user_id){
     let values = [header, user_id];
     return pool.query(sql, values); 
     
+}
+//----------------------------------------------
+//----------------------------------------------
+
+//----------------------------------------------
+//----------------------------------------------
+dbMethods.getAllListItems = function(){
+    let sql = "SELECT * FROM itemlists ORDER BY itemid";
+    return pool.query(sql); //return the promise
 }
 //----------------------------------------------
 dbMethods.createListItem = function(text, listeid){
@@ -47,16 +55,44 @@ dbMethods.deleteListItems = function(id){
     return pool.query(sql, values);//return the promise
 }
 //-----------------------------------------------
-dbMethods.changeListItem = function(dbCol, newDbValue, itemID){
-    let sql = `UPDATE itemlists SET ${dbCol} = $1 WHERE itemid = $2 RETURNING *`;
-    let values = [newDbValue, itemID];
+
+//----------------------------------------------
+//----------------------------------------------
+dbMethods.deleteFromDB = function(dbTable, dbCol, inpId){
+    let sql = `DELETE FROM ${dbTable} WHERE ${dbCol} = $1 RETURNING *`;
+    let values = [inpId];
+    return pool.query(sql, values);//return the promise
+}
+dbMethods.changeDB = function(dbTable, dbCol, newDbValue, dbID, inpId){
+    let sql = `UPDATE ${dbTable} SET ${dbCol} = $1 WHERE ${dbID} = $2 RETURNING *`;
+    let values = [newDbValue, inpId];
     return pool.query(sql,values);//return the promise
 }
-//----------------------------------------------
-//----------------------------------------------
+dbMethods.changeLastLogin = function(dbTable, dbCol, intext, userid){
+    
+    const d = new Date();
+      let day = d.getDate();
+      let month = d.getMonth();
+      let year = d.getFullYear();
+      
 
+      let hours = d.getHours();
+      let minutes = d.getMinutes();
+      let oneNumber = "0";
+      if(minutes.length = 1){
+        minutes = oneNumber + minutes;
+      }
+    //let lastLoginTime = `${hours}.${minutes}.${seconds}`;
+     let lastLoginText = `${day}.${month}.${year} & ${hours}.${minutes}`;
 
-
+      //Update users set "lastLogin" = 'blabls' where id = 1;
+    //let sql = `UPDATE users SET "lastLogin" = "funker denne" WHERE "id" = ${userid} RETURNING *`;
+    //let sql = `UPDATE ${dbTable} SET ${dbCol} = $1 WHERE id = "${userid}" RETURNING *`;
+   // let sql = `UPDATE users SET lastLogin = "funker denne" WHERE id = ${userid} RETURNING *`;
+   let sql = `UPDATE users SET "lastLogin" = '${lastLoginText}' WHERE id = ${userid} RETURNING *`;
+   // let values = [lastLoginText,userid];
+    return pool.query(sql);//return the promise
+}
 
 //----------------------------------------------
 //----------------------------------------------

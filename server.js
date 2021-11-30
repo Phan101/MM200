@@ -3,25 +3,15 @@ const server = express();
 const PORT = process.env.PORT || 8080;
 server.set("port", PORT);
 
-const blogposts = require("./modules/blogposts.js");
+const todoLists = require("./modules/lists.js");
 const users = require("./modules/users.js");
-const authUtils = require("./modules/auth_utils.js");
 
 // middleware ---------------------------
 server.use(express.static("public"));
 server.use(express.json());
 
-server.use(blogposts);
-server.use(users)
-
-let hash = authUtils.createHash("kongolav");
-//console.log(hash);
-
-let token = authUtils.createToken("jostein", 1);
-//console.log(token);
-
-let payload = authUtils.verifyToken(token);
-//console.log(payload);
+server.use(todoLists);
+server.use(users);
 
 //general error handlogig----------------
 server.use(function(err, req, res, next){

@@ -4,23 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">    
     <title>login</title>
+    <link rel="stylesheet" type="text/css" href="/css/stylesheet.css">
 </head>
 <body> 
 
     <!----------- HTML-elements -------------->
-    <a href="index.html">Home</a> 
-    <h1>login</h1>
-    <input id="inpUsername" type="text" placeholder="Username"/> <br>
-    <input id="inpPassword" type="text" placeholder="Password"/> <br><br>
+    <div class="main">
+        <h1 class="titleText">Logg inn</h1>
+        <input id="inpUsername" type="text" placeholder="Username"/> <br>
+        <input id="inpPassword" type="text" placeholder="Password"/> <br><br>
+        <script type="module"></script>
     
-    <button id="btnLogin">login</button><br>
-    <h3 id="txtResult">Result...</h3>
+        <button id="btnLogin">Logg inn</button>
+        <button id="btnSignUp">Sign up</button><br>
+        <h3 id="txtResult"></h3>
+    </div>
     <!------------- JavaScript --------------->
     <script>
         let inpUsername = document.getElementById("inpUsername");
         let inpPassword = document.getElementById("inpPassword");
         let btnLogin = document.getElementById("btnLogin");
         let txtResult = document.getElementById("txtResult");
+        let loginId = null;
+        
+        
+
+        // Skip login if token is stored.
+          if (localStorage.token){
+            window.location.href = "/todoLists.html";
+        }
+        /*async function getUserId(){
+            let data = await db.getUser(cred.username);
+
+           let sql = "SELECT * FROM users WHERE username = $1";
+           let userid = data.rows[0].id;
+           console.log(userid);
+
+           
+        } */
+        
+    
  
         btnLogin.addEventListener("click", async function(evt){
             let url = "/users/login";
@@ -34,12 +57,18 @@
             try{
                 let response = await fetch(url, cfg);
                 let data = await response.json();
-
+                console.log(data);
+                
                 if(response.status != 200){
                     throw data.error;;
                 }
+                
                 txtResult.innerHTML = data.msg;
                 localStorage.setItem("token", data.token);
+                localStorage.setItem("userAuth", data.userid);
+               
+                
+                window.location.href = "/todoLists.html";
             }
             catch(err){
                 console.log(err);
