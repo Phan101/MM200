@@ -1,4 +1,5 @@
 
+/* CSS for Login page */
 .main {
     background-color: #FFFFFF;
     width: 400px;
@@ -61,4 +62,20 @@
 
 #btnLogin:hover {
     background: linear-gradient(to right, #9a39ac, #ff00ea);
+}
+
+/* CSS for todolists.html */
+#divContainer {
+    max-width: 500px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Equal width, fr = fractional unit */
+    grid-gap: 20px;
+}
+
+/* CSS for userprofile */
+#profileDiv {
+    display: none;
 }

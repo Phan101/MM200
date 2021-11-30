@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Profile</title>
     <script src="js/security.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/stylesheet.css">
   </head>
   <body>
     <!----------- HTML-elements -------------->
@@ -13,12 +14,20 @@
     <p id="userProfile" style="font-size:200%""></p>
     <button id="changeUsername">Change Username</button>
     <button id="changePassword">Change Password</button>
-    <button id="deleteUser" onclick="confirmDelete()">Delete User</button>
+    <button id="deleteUser">Delete</button>
     <h3 id="txtResult"></h3>
 
     <hr/>
     <div id="container"></div>
 
+    <div id="profileDiv">
+      <h2><b>Change Username:</b></h2>
+      <h3>Type in your old username</h3>
+        <input id='inpUsername' type='text' placeholder='Old Username'/><br>
+      <h3>Type in your password</h3>
+        <input id='inpPassword' type='password' placeholder='Password'/><input type="checkbox" onclick="showPw()">Show password<br><br>
+        <button id="changeBtn">Change username</button>
+    </div>
     <!------------- JavaScript --------------->
     <script>
       let container = document.getElementById("container");
@@ -59,9 +68,7 @@
           }
         }
 
-      document
-        .getElementById("changeUsername")
-        .addEventListener("click", async function (evt) {
+      document.getElementById("changeUsername").addEventListener("click", async function (evt) {
           let url = "/users";
           let token = localStorage.getItem("token");
           let cfg = {
@@ -80,21 +87,13 @@
             for (value of data){
                 allUsers.push(value);
               };
-
+            showProfileDiv();
             container.innerHTML = ""; //delete previous content
 
-            let profileDiv = document.createElement("div");
-
-            profileDiv.innerHTML = `<h2><b>Change Username:</b></h2>
-                  <h3>Type in your old username</h3>
-                  <input id='inpUsername' type='text' placeholder='Old Username'/><br>
-                  <h3>Type in your password</h3>
-                  <input id='inpPassword' type='text' placeholder='Password'/><br><br>`;
-            container.appendChild(profileDiv);
             let inpUsername = document.getElementById("inpUsername");
             let inpPassword = document.getElementById("inpPassword");
             //new item button
-            let changeBtn = document.createElement("button");
+            let changeBtn = document.getElementById("changeBtn");
             let btnStates = { clicked: false };
             changeBtn.innerHTML = "Change";
             profileDiv.appendChild(changeBtn);
@@ -133,8 +132,9 @@
                 if (response.status != 200) {
                   throw data.error;
                 }
+                
                 //container.innerHTML = ""; //delete previous content
-                profileDiv.innerHTML += "<h3>Type in your new username</h3>";
+                profileDiv.innerHTML = "<h3>Type in your new username</h3>";
                 profileDiv.innerHTML +=
                   "<input id='newUsername' type='text' placeholder='New Username'/><br><br>";
 
@@ -184,7 +184,7 @@
           let response = await fetch(url, cfg);
           let data = await response.json();
 
-          if (response.status != 200) {
+          if (response.status !== 200) {
             throw data.error;
           }
         } catch (error) {
@@ -192,6 +192,8 @@
         }
       }
 
+      // ----- Delete user
+      document.getElementById("deleteUser").addEventListener("click", confirmDelete);
       function confirmDelete(){
         let confirmUserDelete = confirm("Are you sure you want to delete user?");
         if(confirmUserDelete){
@@ -224,7 +226,7 @@
           let response = await fetch(url, cfg);
           let data = await response.json();
 
-          if (response.status != 200) {
+          if (response.status !== 200) {
             throw data.error;
           }
 
@@ -368,8 +370,19 @@
         .addEventListener("click", function (evt) {
           localStorage.clear();
           window.location.href = "/userlogin.html";
-        }); 
+        });
+        
+      function showProfileDiv(){
+        let profileDiv = document.getElementById("profileDiv");
 
+        if(profileDiv.style.display === "block"){
+          profileDiv.style.display = "none";
+        } else {
+          profileDiv.style.display = "block";
+        }
+      }
+
+      // Credentials
       function createCredentialString(username, password) {
         let combinedStr = `${username}:${password}`;
         let b64Str = btoa(combinedStr);
