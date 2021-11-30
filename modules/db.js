@@ -69,7 +69,14 @@ dbMethods.getAllUsers = function() {
 //----------------------------------------------
 dbMethods.getUser = function(username) {
     let sql = "SELECT * FROM users WHERE username = $1";
-    let values = [username]; 
+    let values = [username];
+    return pool.query(sql, values);
+}
+
+//----------------------------------------------
+dbMethods.getId = function(id) {
+    let sql = "SELECT * FROM users WHERE id = $1";
+    let values = [id];
     return pool.query(sql, values);
 }
 //----------------------------------------------

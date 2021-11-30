@@ -15,6 +15,7 @@
     <button id="changeUsername">Change Username</button>
     <button id="changePassword">Change Password</button>
     <button id="deleteUser">Delete</button>
+    <h3 id="txtResult"></h3>
 
     <hr/>
     <div id="container"></div>
@@ -27,49 +28,20 @@
         <input id='inpPassword' type='password' placeholder='Password'/><input type="checkbox" onclick="showPw()">Show password<br><br>
         <button id="changeBtn">Change username</button>
     </div>
-    <div id="changePasswordDiv">
-      <h2><b>Change Password:</b></h2>
-                  <h3>Type in your username</h3>
-                  <input id='inpUsername2' type='text' placeholder='Username'/><br>
-                  <h3>Type in your old password</h3>
-                  <input id='inpPassword2' type='text' placeholder='Old Password'/><br><br>
-                  <button id="verifyBtn">Change Password</button>
-    </div>
-    <h3 id="txtResult"></h3>
     <!------------- JavaScript --------------->
     <script>
       let container = document.getElementById("container");
       let txtResult = document.getElementById("txtResult");
-      let inpUsername = document.getElementById("inpUsername");
-      let inpPassword = document.getElementById("inpPassword");
-
-      let inpUsername2 = document.getElementById("inpUsername2");
-      let inpPassword2 = document.getElementById("inpPassword2");
-
-      let changeBtn = document.getElementById("changeBtn"); // Change username
-      let verifyBtn = document.getElementById("verifyBtn"); // Change password
-      let profileDiv = document.getElementById("profileDiv");
-      let changePasswordDiv = document.getElementById("changePasswordDiv");
-      
       let changeUsername = [];
 
-        
-      loadScreen(localStorage.idAuth);
-      async function loadScreen(id){
-        let url = "/getuser";
-        let token = localStorage.getItem("token");
-        let updata = {
-          userId: id,
-        };
-
-        let cfg = {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-            authorization: token,
-          },
-          body: JSON.stringify(updata),
-        };
+      loadScreen();
+      async function loadScreen(){
+        let url = "/users";
+          let token = localStorage.getItem("token");
+          let cfg = {
+            method: "GET",
+            headers: { authorization: token },
+          };
           try {
             let response = await fetch(url, cfg);
             let data = await response.json();
@@ -78,28 +50,31 @@
               throw data.error;
             }
 
+            let loggedInUser;
+            let allUsers = [];
+            for (value of data){
+                allUsers.push(value);
+              };
+              for(let i=0; i<allUsers.length; i++){
+                  if(allUsers[i].id == localStorage.idAuth){
+                    loggedInUser = allUsers[i].username;
+                  }
+                }
+
               let userProfile = document.getElementById("userProfile");
-              userProfile.innerHTML = `Welcome to your profile, <b>${data[0].username}</b>. (id:${data[0].id})`;
+              userProfile.innerHTML = `Welcome to your profile, <b>${loggedInUser}</b>. (id:${localStorage.idAuth})`;
       } catch (error) {
             console.log(error);
           }
         }
 
       document.getElementById("changeUsername").addEventListener("click", async function (evt) {
-        let url = "/getuser";
-        let token = localStorage.getItem("token");
-        let updata = {
-          userId: localStorage.idAuth,
-        };
-
-        let cfg = {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-            authorization: token,
-          },
-          body: JSON.stringify(updata),
-        };
+          let url = "/users";
+          let token = localStorage.getItem("token");
+          let cfg = {
+            method: "GET",
+            headers: { authorization: token },
+          };
           try {
             let response = await fetch(url, cfg);
             let data = await response.json();
@@ -107,10 +82,21 @@
             if (response.status != 200) {
               throw data.error;
             }
-          let loginUsername = data[0].username;
-          console.log(loginUsername);
 
+            let allUsers = [];
+            for (value of data){
+                allUsers.push(value);
+              };
             showProfileDiv();
+            container.innerHTML = ""; //delete previous content
+
+            let inpUsername = document.getElementById("inpUsername");
+            let inpPassword = document.getElementById("inpPassword");
+            //new item button
+            let changeBtn = document.getElementById("changeBtn");
+            let btnStates = { clicked: false };
+            changeBtn.innerHTML = "Change";
+            profileDiv.appendChild(changeBtn);
 
             changeBtn.addEventListener("click", async function (evt) {
               let url = "/users/login";
@@ -119,16 +105,26 @@
                 inpPassword.value
               );
 
+
               let cfg = {
                 method: "POST",
                 headers: { authorization: credString },
               };
 
+
               try {
                 let response = await fetch(url, cfg);
                 let data = await response.json();
 
-                if(loginUsername != inpUsername.value){
+                let inpId;
+
+                for(let i=0; i<allUsers.length; i++){
+                  if(allUsers[i].username === inpUsername.value){
+                    inpId = allUsers[i].id;
+                  }
+                }
+
+                if(inpId != localStorage.idAuth){
                   console.log("feil")
                   throw "Invalid username";
                 }
@@ -137,15 +133,16 @@
                   throw data.error;
                 }
                 
+                //container.innerHTML = ""; //delete previous content
                 profileDiv.innerHTML = "<h3>Type in your new username</h3>";
                 profileDiv.innerHTML +=
                   "<input id='newUsername' type='text' placeholder='New Username'/><br><br>";
 
-                let changeUsernameBtn = document.createElement("button");
-                changeUsernameBtn.innerHTML = "Change";
-                profileDiv.appendChild(changeUsernameBtn);
+                let changeBtn = document.createElement("button");
+                changeBtn.innerHTML = "Change";
+                profileDiv.appendChild(changeBtn);
 
-                changeUsernameBtn.addEventListener("click", async function (evt) {
+                changeBtn.addEventListener("click", async function (evt) {
                   let newUsername = document.getElementById("newUsername");
                   changeUsername.value = newUsername.value;
                   changeUsername.id = localStorage.idAuth;
@@ -155,7 +152,8 @@
                 });
               } catch (err) {
                 console.log(err);
-                txtResult.innerHTML = "Something went wrong - check the console window";
+                txtResult.innerHTML =
+                  "Something went wrong - check the console window";
               }
             });
           } catch (error) {
@@ -192,7 +190,6 @@
         } catch (error) {
           console.log(error);
         }
-        location.reload(); // Refresher for å gi nye profilnavnet
       }
 
       // ----- Delete user
@@ -240,37 +237,47 @@
 
        
       document.getElementById("changePassword").addEventListener("click", async function (evt) {
-        let url = "/getuser";
-        let token = localStorage.getItem("token");
-        let updata = {
-          userId: localStorage.idAuth,
-        };
-
-        let cfg = {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-            authorization: token,
-          },
-          body: JSON.stringify(updata),
-        };
+        let url = "/users";
+          let token = localStorage.getItem("token");
+          let cfg = {
+            method: "GET",
+            headers: { authorization: token },
+          };
           try {
             let response = await fetch(url, cfg);
             let data = await response.json();
 
-            let inpId = data[0].id;
-            let salt = data[0].salt;
-            let username = data[0].username;
-
             if (response.status != 200) {
               throw data.error;
             }
-            showChangePasswordDiv();
+
+            let allUsers = [];
+            for (value of data){
+                allUsers.push(value);
+              };
+
+            container.innerHTML = ""; //delete previous content
+
+            let profileDiv = document.createElement("div");
+
+            profileDiv.innerHTML = `<h2><b>Change Password:</b></h2>
+                  <h3>Type in your username</h3>
+                  <input id='inpUsername' type='text' placeholder='Username'/><br>
+                  <h3>Type in your old password</h3>
+                  <input id='inpPassword' type='text' placeholder='Old Password'/><br><br>`;
+            container.appendChild(profileDiv);
+            let inpUsername = document.getElementById("inpUsername");
+            let inpPassword = document.getElementById("inpPassword");
+
+            let verifyBtn = document.createElement("button");
+            verifyBtn.innerHTML = "Change Password";
+            profileDiv.appendChild(verifyBtn);
+
             verifyBtn.addEventListener("click", async function (evt) {
               let url = "/users/login";
               let credString = createCredentialString(
-                inpUsername2.value,
-                inpPassword2.value
+                inpUsername.value,
+                inpPassword.value
               );
 
               let cfg = {
@@ -280,8 +287,18 @@
               try {
                 let response = await fetch(url, cfg);
                 let data = await response.json();
+                let inpId;
+                let salt;
+                let username;
                 if (response.status != 200) {
                   throw data.error;
+                }
+                for(let i=0; i<allUsers.length; i++){
+                  if(allUsers[i].username === inpUsername.value){
+                    inpId = allUsers[i].id;
+                    salt = allUsers[i].salt;
+                    username = allUsers[i].username;
+                  }
                 }
 
                 if(inpId != localStorage.idAuth){
@@ -289,12 +306,12 @@
                   throw "Invalid username";
                 }
                 console.log("riktig verifisering");
-                changePasswordDiv.innerHTML = "<h3>Type in your new password</h3>";
-                changePasswordDiv.innerHTML += "<input id='newPassword' type='text' placeholder='New Password'/><br><br>";
+                profileDiv.innerHTML += "<h3>Type in your new password</h3>";
+                profileDiv.innerHTML += "<input id='newPassword' type='text' placeholder='New Password'/><br><br>";
 
                 let changePWBtn = document.createElement("button");
                 changePWBtn.innerHTML = "Update password";
-                changePasswordDiv.appendChild(changePWBtn);
+                profileDiv.appendChild(changePWBtn);
 
                 changePWBtn.addEventListener("click", async function (evt) {
                   let newPassword = document.getElementById("newPassword");
@@ -354,24 +371,14 @@
           localStorage.clear();
           window.location.href = "/userlogin.html";
         });
-
+        
       function showProfileDiv(){
-        txtResult.innerHTML = "";
+        let profileDiv = document.getElementById("profileDiv");
+
         if(profileDiv.style.display === "block"){
           profileDiv.style.display = "none";
         } else {
           profileDiv.style.display = "block";
-          changePasswordDiv.style.display = "none";
-        }
-      }
-
-      function showChangePasswordDiv(){
-        txtResult.innerHTML = "";
-        if(changePasswordDiv.style.display === "block"){
-          changePasswordDiv.style.display = "none";
-        } else {
-          changePasswordDiv.style.display = "block";
-          profileDiv.style.display = "none";
         }
       }
 
