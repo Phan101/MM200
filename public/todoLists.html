@@ -89,7 +89,7 @@
                             listdiv.insertBefore(inpEditList, btnEditList);
                             btnStates.clicked = true;
                         }else{
-                            let inputBox = listdiv.getElementsByTagName("input")[0];
+                            let inputBox = listdiv.getElementsByTagName("input")[1];
                             editList(inputBox.value, listvalue.id);
 
                             inputBox.remove();
@@ -126,7 +126,7 @@
                             listdiv.insertBefore(newListItemInp, newItemBtn);
                             btnStates.clicked = true;
                         }else{
-                            let inputBox = listdiv.getElementsByTagName("input")[0];
+                            let inputBox = listdiv.getElementsByTagName("input")[1];
                             newListItem(inputBox.value, listvalue.id)
 
                             inputBox.remove();

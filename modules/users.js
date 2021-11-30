@@ -59,9 +59,10 @@ router.get("/users", protect, async function(req, res, next){
 })
 
 // list user ---------------------
-router.get("/user", protect, async function(req, res, next){
+router.post("/getuser", protect, async function(req, res, next){
+    let updata = req.body;
     try {
-        let data = await db.getUser();
+        let data = await db.getId(updata.userId);
         res.status(200).json(data.rows).end();
     }
     catch(err) {

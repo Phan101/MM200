@@ -34,23 +34,14 @@
       let txtResult = document.getElementById("txtResult");
       let changeUsername = [];
 
-        
-      loadScreen(localStorage.idAuth);
-      async function loadScreen(id){
-        let url = "/getuser";
-        let token = localStorage.getItem("token");
-        let updata = {
-          userId: id,
-        };
-
-        let cfg = {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-            authorization: token,
-          },
-          body: JSON.stringify(updata),
-        };
+      loadScreen();
+      async function loadScreen(){
+        let url = "/users";
+          let token = localStorage.getItem("token");
+          let cfg = {
+            method: "GET",
+            headers: { authorization: token },
+          };
           try {
             let response = await fetch(url, cfg);
             let data = await response.json();
@@ -59,28 +50,31 @@
               throw data.error;
             }
 
+            let loggedInUser;
+            let allUsers = [];
+            for (value of data){
+                allUsers.push(value);
+              };
+              for(let i=0; i<allUsers.length; i++){
+                  if(allUsers[i].id == localStorage.idAuth){
+                    loggedInUser = allUsers[i].username;
+                  }
+                }
+
               let userProfile = document.getElementById("userProfile");
-              userProfile.innerHTML = `Welcome to your profile, <b>${data[0].username}</b>. (id:${data[0].id})`;
+              userProfile.innerHTML = `Welcome to your profile, <b>${loggedInUser}</b>. (id:${localStorage.idAuth})`;
       } catch (error) {
             console.log(error);
           }
         }
 
       document.getElementById("changeUsername").addEventListener("click", async function (evt) {
-        let url = "/getuser";
-        let token = localStorage.getItem("token");
-        let updata = {
-          userId: localStorage.idAuth,
-        };
-
-        let cfg = {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-            authorization: token,
-          },
-          body: JSON.stringify(updata),
-        };
+          let url = "/users";
+          let token = localStorage.getItem("token");
+          let cfg = {
+            method: "GET",
+            headers: { authorization: token },
+          };
           try {
             let response = await fetch(url, cfg);
             let data = await response.json();
@@ -88,9 +82,11 @@
             if (response.status != 200) {
               throw data.error;
             }
-          let loginUsername = data[0].username;
-          console.log(loginUsername);
 
+            let allUsers = [];
+            for (value of data){
+                allUsers.push(value);
+              };
             showProfileDiv();
             container.innerHTML = ""; //delete previous content
 
@@ -115,11 +111,20 @@
                 headers: { authorization: credString },
               };
 
+
               try {
                 let response = await fetch(url, cfg);
                 let data = await response.json();
 
-                if(loginUsername != inpUsername.value){
+                let inpId;
+
+                for(let i=0; i<allUsers.length; i++){
+                  if(allUsers[i].username === inpUsername.value){
+                    inpId = allUsers[i].id;
+                  }
+                }
+
+                if(inpId != localStorage.idAuth){
                   console.log("feil")
                   throw "Invalid username";
                 }
@@ -128,6 +133,7 @@
                   throw data.error;
                 }
                 
+                //container.innerHTML = ""; //delete previous content
                 profileDiv.innerHTML = "<h3>Type in your new username</h3>";
                 profileDiv.innerHTML +=
                   "<input id='newUsername' type='text' placeholder='New Username'/><br><br>";
@@ -231,31 +237,24 @@
 
        
       document.getElementById("changePassword").addEventListener("click", async function (evt) {
-        let url = "/getuser";
-        let token = localStorage.getItem("token");
-        let updata = {
-          userId: localStorage.idAuth,
-        };
-
-        let cfg = {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-            authorization: token,
-          },
-          body: JSON.stringify(updata),
-        };
+        let url = "/users";
+          let token = localStorage.getItem("token");
+          let cfg = {
+            method: "GET",
+            headers: { authorization: token },
+          };
           try {
             let response = await fetch(url, cfg);
             let data = await response.json();
 
-            let inpId = data[0].id;
-            let salt = data[0].salt;
-            let username = data[0].username;
-
             if (response.status != 200) {
               throw data.error;
             }
+
+            let allUsers = [];
+            for (value of data){
+                allUsers.push(value);
+              };
 
             container.innerHTML = ""; //delete previous content
 
@@ -288,8 +287,18 @@
               try {
                 let response = await fetch(url, cfg);
                 let data = await response.json();
+                let inpId;
+                let salt;
+                let username;
                 if (response.status != 200) {
                   throw data.error;
+                }
+                for(let i=0; i<allUsers.length; i++){
+                  if(allUsers[i].username === inpUsername.value){
+                    inpId = allUsers[i].id;
+                    salt = allUsers[i].salt;
+                    username = allUsers[i].username;
+                  }
                 }
 
                 if(inpId != localStorage.idAuth){
