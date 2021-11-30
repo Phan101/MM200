@@ -79,12 +79,6 @@ dbMethods.createUser = function(username, password, salt) {
     return pool.query(sql, values);
 }
 
-dbMethods.encryptPassword = function(dbId, dbUsername, dbPassword, dbSalt) {
-    //let sql = "INSERT INTO users (id, username, password, salt) VALUES(DEFAULT, $1, $2, $3) returning *";
-    let values = [dbId, dbUsername, dbPassword, dbSalt];
-    return pool.query(values);
-}
-
 //----------------------------------------------
 dbMethods.deleteUser = function(id) {
     let sql = "DELETE FROM users WHERE id = $1 RETURNING *";

@@ -10,7 +10,7 @@
     <!----------- HTML-elements -------------->
     <a href="userlogin.html">Back</a>
     <button id="logOut">Logout</button>
-    <h1>Your Profile</h1>
+    <p id="userProfile" style="font-size:200%""></p>
     <button id="changeUsername">Change Username</button>
     <button id="changePassword">Change Password</button>
     <button id="deleteUser" onclick="confirmDelete()">Delete User</button>
@@ -24,6 +24,40 @@
       let container = document.getElementById("container");
       let txtResult = document.getElementById("txtResult");
       let changeUsername = [];
+
+      loadScreen();
+      async function loadScreen(){
+        let url = "/users";
+          let token = localStorage.getItem("token");
+          let cfg = {
+            method: "GET",
+            headers: { authorization: token },
+          };
+          try {
+            let response = await fetch(url, cfg);
+            let data = await response.json();
+
+            if (response.status != 200) {
+              throw data.error;
+            }
+
+            let loggedInUser;
+            let allUsers = [];
+            for (value of data){
+                allUsers.push(value);
+              };
+              for(let i=0; i<allUsers.length; i++){
+                  if(allUsers[i].id == localStorage.idAuth){
+                    loggedInUser = allUsers[i].username;
+                  }
+                }
+
+              let userProfile = document.getElementById("userProfile");
+              userProfile.innerHTML = `Welcome to your profile, <b>${loggedInUser}</b>. (id:${localStorage.idAuth})`;
+      } catch (error) {
+            console.log(error);
+          }
+        }
 
       document
         .getElementById("changeUsername")
@@ -254,7 +288,6 @@
                 let inpId;
                 let salt;
                 let username;
-                let password;
                 if (response.status != 200) {
                   throw data.error;
                 }
@@ -263,7 +296,6 @@
                     inpId = allUsers[i].id;
                     salt = allUsers[i].salt;
                     username = allUsers[i].username;
-                    //password = allUsers[i].password;
                   }
                 }
 
@@ -281,9 +313,8 @@
 
                 changePWBtn.addEventListener("click", async function (evt) {
                   let newPassword = document.getElementById("newPassword");
-                  let password = newPassword.value;
-                  let test = encryptNewPassword(inpId, username, password, salt);
-                  console.log(test);
+                  newPassword = newPassword.value;
+                  updatePassword(username, newPassword, salt, inpId);
                 });
                 
               } catch (error) {
@@ -295,28 +326,30 @@
         }
     });
 
-    async function encryptNewPassword(inpId, username, password, salt){
-      let url = "/encryptpassword";
+    async function updatePassword(username, password, salt, inpId){
+      let url = "/updatepassword";
             let credString = createCredentialString(username, password)
+
+            let updata = {
+            dbSalt: salt,
+            dbTable: "users",
+            dbCol: "password",
+            inpId: inpId,
+            dbID: "id",
+        }; 
             
             let cfg = {
                 method: "POST",
-                headers: {"authorization":credString}
+                headers: {
+                    "content-type":"application/json",
+                    "authorization":credString
+                },
+                body: JSON.stringify(updata)
             }
-            let updata = {
-            dbInp: inpId,
-            dbUsername: username,
-            dbPassword: password,
-            dbSalt: salt,
-        };
 
             try{
                 let response = await fetch(url, cfg);
                 let data = await response.json();
-                console.log(data);
-                console.log(updata);
-                console.log(createCredentialString(password));
-                console.log(credString);
 
                 if(response.status !== 200){
                     throw data.error;
@@ -328,41 +361,6 @@
                 txtResult.innerHTML = "Something went wrong - check the console window";
             }
         };
-
-   async function createNewPassword(password, inpId){
-        let url = "/changeuserinfo";
-        let token = localStorage.getItem("token");
-
-        let updata = {
-          dbTable: "users",
-          dbCol: "password",
-          newDbText: password,
-          dbID: "id",
-          id: inpId,
-        };
-
-        let cfg = {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-            authorization: token,
-          },
-          body: JSON.stringify(updata),
-        };
-
-        try {
-          let response = await fetch(url, cfg);
-          let data = await response.json();
-
-          if (response.status != 200) {
-            throw data.error;
-          }
-
-        } catch (error) {
-          console.log(error);
-        }
-    }
-
           
 
       document
