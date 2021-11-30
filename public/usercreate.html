@@ -4,17 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">    
     <title>createuser</title>
+    <link rel="stylesheet" type="text/css" href="/css/stylesheet.css">
 </head>
 <body> 
 
     <!----------- HTML-elements -------------->
     <a href="index.html">Home</a> 
-    <h1>Create new user</h1>
+    <div class="main">
+    <h1 class="titleText">Create new user</h1>
     <input id="inpUsername" type="text" placeholder="Username"/> <br>
     <input id="inpPassword" type="text" placeholder="Password"/> <br><br>
     
     <button id="btnCreate">Create user</button><br>
-    <h3 id="txtResult">Result...</h3>
+    <h3 id="txtResult">Result...</h3></div>
     <!------------- JavaScript --------------->
     <script>
         let inpUsername = document.getElementById("inpUsername");
@@ -35,8 +37,8 @@
                 let response = await fetch(url, cfg);
                 let data = await response.json();
 
-                if(response.status != 200){
-                    throw data.error;;
+                if(response.status !== 200){
+                    throw data.error;
                 }
                 txtResult.innerHTML = data.msg
             }

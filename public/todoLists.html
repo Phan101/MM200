@@ -5,25 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">    
     <link rel="shortcut icon" href="#">
     <title>todoLists</title>
+    <script src="js/security.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/stylesheet.css">
 </head> 
 <body>
  
     <!----------- HTML-elements -------------->
     <a href="index.html">Home</a> 
     <button id="logOut">Logout</button>
+    <button id="yourProfile">Your profile</button>
+    <div id="container" class="grid-container"></div>
+    
     <div id="newItemDiv">
         <button id="btnNewList">New List</button>
-    </div> 
-    <div id="container"></div>
-    
+    </div>
     <!------------- JavaScript --------------->
     <script>
         let container = document.getElementById("container");
         let newItemBox = document.getElementById("newItemBox");
         let submitListItemBtn = document.getElementById("submitListItem");
+        // new:
         let btnShowNewList = document.getElementById("btnNewList");
         let divNewList = document.getElementById("newItemDiv");
-        
+
         async function showAllToDoLists() {
 
             let itemUrl = "/itemlist";
@@ -55,6 +59,8 @@
 
                 //create list div
                     let listdiv = document.createElement("div");
+                    listdiv.setAttribute("id", "divContainer");
+                    listdiv.setAttribute("class", "grid-item");
                     let divContent = `<h2>${listvalue.header}</h2>`;
                     listdiv.innerHTML = divContent;
                     container.appendChild(listdiv);
@@ -461,21 +467,13 @@
         }
         showAllToDoLists();
 
-        document.getElementById("logOut").addEventListener("click", async function(evt){
-        let url = "/users";
-        try{
-            let response = await fetch(url);
-            let data = await response.json();
+    document.getElementById("logOut").addEventListener("click", function(evt){
+        localStorage.clear();
+        window.location.href = "/userlogin.html";
+    });
 
-            if(response.status != 200){
-                    throw data.error;
-                }
-                localStorage.clear();
-                window.location.href = "/userlogin.html";
-        }
-        catch(err){
-                console.log(err);
-            }
+    document.getElementById("yourProfile").addEventListener("click", function(evt){
+        window.location.href = "/userprofile.html";
     });
 
     </script>
