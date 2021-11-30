@@ -15,7 +15,6 @@
     <button id="changeUsername">Change Username</button>
     <button id="changePassword">Change Password</button>
     <button id="deleteUser">Delete</button>
-    <h3 id="txtResult"></h3>
 
     <hr/>
     <div id="container"></div>
@@ -36,6 +35,7 @@
                   <input id='inpPassword2' type='text' placeholder='Old Password'/><br><br>
                   <button id="verifyBtn">Change Password</button>
     </div>
+    <h3 id="txtResult"></h3>
     <!------------- JavaScript --------------->
     <script>
       let container = document.getElementById("container");
@@ -196,6 +196,7 @@
         } catch (error) {
           console.log(error);
         }
+        location.reload(); // Refresher for å gi nye profilnavnet
       }
 
       // ----- Delete user
@@ -362,6 +363,7 @@
         });
 
       function showProfileDiv(){
+        txtResult.innerHTML = "";
         if(profileDiv.style.display === "block"){
           profileDiv.style.display = "none";
         } else {
@@ -371,6 +373,7 @@
       }
 
       function showChangePasswordDiv(){
+        txtResult.innerHTML = "";
         if(changePasswordDiv.style.display === "block"){
           changePasswordDiv.style.display = "none";
         } else {
