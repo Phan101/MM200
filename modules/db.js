@@ -79,18 +79,12 @@ dbMethods.changeLastLogin = function(dbTable, dbCol, intext, userid){
       let hours = d.getHours();
       let minutes = d.getMinutes();
       let oneNumber = "0";
-      if(minutes.length = 1){
+      if(minutes.length === 1){
         minutes = oneNumber + minutes;
       }
-    //let lastLoginTime = `${hours}.${minutes}.${seconds}`;
-     let lastLoginText = `${day}.${month}.${year} & ${hours}.${minutes}`;
 
-      //Update users set "lastLogin" = 'blabls' where id = 1;
-    //let sql = `UPDATE users SET "lastLogin" = "funker denne" WHERE "id" = ${userid} RETURNING *`;
-    //let sql = `UPDATE ${dbTable} SET ${dbCol} = $1 WHERE id = "${userid}" RETURNING *`;
-   // let sql = `UPDATE users SET lastLogin = "funker denne" WHERE id = ${userid} RETURNING *`;
+     let lastLoginText = `${day}.${month}.${year} & ${hours}.${minutes}`;
    let sql = `UPDATE users SET "lastLogin" = '${lastLoginText}' WHERE id = ${userid} RETURNING *`;
-   // let values = [lastLoginText,userid];
     return pool.query(sql);//return the promise
 }
 

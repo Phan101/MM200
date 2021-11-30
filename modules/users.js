@@ -2,6 +2,7 @@ const express = require("express");
 const db = require("./db.js");
 const authUtils = require("./auth_utils.js");
 const router = express.Router();
+const protect = require("./auth.js");
 
 // endpoints ----------------------
 
@@ -33,8 +34,6 @@ router.post("/users/login", async function(req, res, next){
                     userid: data.rows[0].id
                 }).end();
 
-            
-
             }else{
                 res.status(403).json({error: "Wrong password :("}).end();
                 return;
@@ -49,9 +48,20 @@ router.post("/users/login", async function(req, res, next){
 })
 
 // list all users ---------------------
-router.get("/users", async function(req, res, next){
+router.get("/users", protect, async function(req, res, next){
     try {
         let data = await db.getAllUsers();
+        res.status(200).json(data.rows).end();
+    }
+    catch(err) {
+        next(err);
+    }
+})
+
+// list user ---------------------
+router.get("/user", protect, async function(req, res, next){
+    try {
+        let data = await db.getUser();
         res.status(200).json(data.rows).end();
     }
     catch(err) {
@@ -99,10 +109,59 @@ router.post("/users/lastlogin", async function(req, res, next){
     }
 })
 
+
 // delete a user ---------------------
-router.delete("/users", async function(req, res, next){
-    res.status(200).send("Hello from DELETE - /users").end();
+router.delete("/deleteuser", protect, async function(req, res, next){
+    let updata = req.body;
+    try{
+        let data = await db.deleteFromDB(updata.dbTable, updata.dbCol, updata.id);
+        if (data.rows.length > 0){
+            res.status(200).json({msg: "The user was deleted successfully"}).end();
+        }
+        else{
+            throw "The user couldn't be deleted";
+        }
+    }
+    catch(err){
+        next(err);
+    }
 })
+
+// delete a user ---------------------
+router.delete("/deleteuser", protect, async function(req, res, next){
+	let updata = req.body;
+	try{
+		let data = await db.deleteFromDB(updata.dbTable, updata.dbCol, updata.id);
+		if (data.rows.length > 0){
+			res.status(200).json({msg: "The user was deleted successfully"}).end();
+		}
+		else{
+			throw "The user couldn't be deleted";
+		}
+	}
+	catch (err){
+		next(err);
+	}
+});
+
+
+// change a user ------------
+router.post("/changeusername", async function(req,res,next){
+	let updata = req.body;
+    console.log(updata);
+	
+	try{
+		let data = await db.changeDB(updata.dbTable, updata.dbCol, updata.newDbText, updata.dbID, updata.id);
+		if (data.rows.length > 0){
+			res.status(200).json({msg: "The item was updated successfully"}).end();
+		}
+		else{
+			throw "The item couldn't be updated";
+		}
+	}catch (err){
+
+	}
+});
 
 // ----
 module.exports = router;
