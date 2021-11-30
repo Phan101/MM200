@@ -31,9 +31,10 @@
     <div id="changePasswordDiv">
       <h2><b>Change Password:</b></h2>
                   <h3>Type in your username</h3>
-                  <input id='inpUsername' type='text' placeholder='Username'/><br>
+                  <input id='inpUsername2' type='text' placeholder='Username'/><br>
                   <h3>Type in your old password</h3>
-                  <input id='inpPassword' type='text' placeholder='Old Password'/><br><br>`
+                  <input id='inpPassword2' type='text' placeholder='Old Password'/><br><br>
+                  <button id="verifyBtn">Change Password</button>
     </div>
     <!------------- JavaScript --------------->
     <script>
@@ -41,7 +42,14 @@
       let txtResult = document.getElementById("txtResult");
       let inpUsername = document.getElementById("inpUsername");
       let inpPassword = document.getElementById("inpPassword");
-      let changeBtn = document.getElementById("changeBtn");
+
+      let inpUsername2 = document.getElementById("inpUsername2");
+      let inpPassword2 = document.getElementById("inpPassword2");
+
+      let changeBtn = document.getElementById("changeBtn"); // Change username
+      let verifyBtn = document.getElementById("verifyBtn"); // Change password
+      let profileDiv = document.getElementById("profileDiv");
+      let changePasswordDiv = document.getElementById("changePasswordDiv");
       
       let changeUsername = [];
 
@@ -256,28 +264,11 @@
 
               showChangePasswordDiv();
 
-          //  container.innerHTML = ""; //delete previous content
-
-           /*  let profileDiv = document.createElement("div");
-
-            profileDiv.innerHTML = `<h2><b>Change Password:</b></h2>
-                  <h3>Type in your username</h3>
-                  <input id='inpUsername' type='text' placeholder='Username'/><br>
-                  <h3>Type in your old password</h3>
-                  <input id='inpPassword' type='text' placeholder='Old Password'/><br><br>`;
-            container.appendChild(profileDiv);
-            let inpUsername = document.getElementById("inpUsername");
-            let inpPassword = document.getElementById("inpPassword");
- */
-            let verifyBtn = document.createElement("button");
-            verifyBtn.innerHTML = "Change Password";
-            profileDiv.appendChild(verifyBtn);
-
             verifyBtn.addEventListener("click", async function (evt) {
               let url = "/users/login";
               let credString = createCredentialString(
-                inpUsername.value,
-                inpPassword.value
+                inpUsername2.value,
+                inpPassword2.value
               );
 
               let cfg = {
@@ -287,14 +278,12 @@
               try {
                 let response = await fetch(url, cfg);
                 let data = await response.json();
-                let inpId;
-                let salt;
-                let username;
+                let inpId, salt, username;
                 if (response.status != 200) {
                   throw data.error;
                 }
                 for(let i=0; i<allUsers.length; i++){
-                  if(allUsers[i].username === inpUsername.value){
+                  if(allUsers[i].username === inpUsername2.value){
                     inpId = allUsers[i].id;
                     salt = allUsers[i].salt;
                     username = allUsers[i].username;
@@ -306,12 +295,12 @@
                   throw "Invalid username";
                 }
                 console.log("riktig verifisering");
-                profileDiv.innerHTML += "<h3>Type in your new password</h3>";
-                profileDiv.innerHTML += "<input id='newPassword' type='text' placeholder='New Password'/><br><br>";
+                changePasswordDiv.innerHTML = "<h3>Type in your new password</h3>";
+                changePasswordDiv.innerHTML += "<input id='newPassword' type='text' placeholder='New Password'/><br><br>";
 
                 let changePWBtn = document.createElement("button");
                 changePWBtn.innerHTML = "Update password";
-                profileDiv.appendChild(changePWBtn);
+                changePasswordDiv.appendChild(changePWBtn);
 
                 changePWBtn.addEventListener("click", async function (evt) {
                   let newPassword = document.getElementById("newPassword");
@@ -371,24 +360,22 @@
           localStorage.clear();
           window.location.href = "/userlogin.html";
         });
-        
-      function showProfileDiv(){
-        let profileDiv = document.getElementById("profileDiv");
 
+      function showProfileDiv(){
         if(profileDiv.style.display === "block"){
           profileDiv.style.display = "none";
         } else {
           profileDiv.style.display = "block";
+          changePasswordDiv.style.display = "none";
         }
       }
 
       function showChangePasswordDiv(){
-        let changePasswordDiv = document.getElementById("changePasswordDiv");
-
         if(changePasswordDiv.style.display === "block"){
           changePasswordDiv.style.display = "none";
         } else {
           changePasswordDiv.style.display = "block";
+          profileDiv.style.display = "none";
         }
       }
 
