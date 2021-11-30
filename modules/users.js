@@ -114,9 +114,9 @@ router.post("/updatepassword", async function(req, res, next){
         let data = await db.changeDB(updata.dbTable, updata.dbCol, hash.value, updata.dbID, updata.inpId);
 
         if(data.rows.length > 0){
-            res.status(200).json({msg: "The user was created successfully"}).end();
+            res.status(200).json({msg: "The password was updated successfully"}).end();
         } else {
-            throw "The user couldn't be created";
+            throw "The password couldn't be updated";
         }
     }
     catch(err){
@@ -149,10 +149,10 @@ router.post("/changeuserinfo", async function(req,res,next){
 	try{
 		let data = await db.changeDB(updata.dbTable, updata.dbCol, updata.newDbText, updata.dbID, updata.id);
 		if (data.rows.length > 0){
-			res.status(200).json({msg: "The item was updated successfully"}).end();
+			res.status(200).json({msg: "The username was updated successfully"}).end();
 		}
 		else{
-			throw "The item couldn't be updated";
+			throw "The username couldn't be updated";
 		}
 	}catch (err){
 
