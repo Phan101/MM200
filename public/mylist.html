@@ -16,7 +16,7 @@
     </div>
     
     <script src="/js/manipulatelists.js"></script>
-     
+    <script src="/js/getUser.js"></script>
     <script>
         let container = document.getElementById("container");
         let newItemBox = document.getElementById("newItemBox");
@@ -24,15 +24,68 @@
         // new:
         let btnShowNewList = document.getElementById("btnNewList");
         let divNewList = document.getElementById("newItemDiv");
-        let loggedInId = localStorage.getItem("idAuth");
+        
+       
         changeLastLogin();
         showAllToDoLists();
-        //main show code    
+    //main show code    
         async function showAllToDoLists() {
+            let token = localStorage.getItem("token");
+            let loggedInUser = await getDecryptedToken(token);
+            let loggedInId = loggedInUser.userid;
+        //show new list div   
+            btnShowNewList.addEventListener("click", function() {
+                
+            //new list input box 
+                let inpNewList = document.createElement("input");
+                divNewList.appendChild(inpNewList);
+            //#new list input box
 
+            //new list button
+                let btnAddNewList = document.createElement("button");
+                btnAddNewList.innerHTML = "Add new list";
+                divNewList.appendChild(btnAddNewList);
+
+                btnAddNewList.addEventListener("click", async function(evt){
+                    let url = "/list";
+                    let updata = {
+                        heading: inpNewList.value,
+                        userid: loggedInId
+                    };
+                    let token = localStorage.getItem("token");
+                    let cfg = {
+                        method: "POST",
+                        headers: {
+                            "content-type":"application/json",
+                            "authorization": token
+                        },
+                        body: JSON.stringify(updata)
+                    };
+
+                    try{
+                        let response = await fetch(url, cfg);
+                        let data = await response.json();
+                        if(response.status != 200){
+                            throw data.error;
+                        }
+                        btnShowNewList.hidden = false;
+                        inpNewList.remove();
+                        btnAddNewList.remove();
+                        showAllToDoLists(); //refresh the list
+                    }
+                    catch(err){
+                        console.log(err);
+                    }
+
+                });
+            //#new list button
+
+                btnShowNewList.hidden = true;
+
+            });
+    //#show new list div   
         let itemUrl = "/itemlist";
         let listUrl = "/list";
-        let token = localStorage.getItem("token");
         let cfg = {
             method: "GET",
             headers: {"authorization":token}
@@ -198,7 +251,6 @@
         }
         }
         //#main show code
-
         document.getElementById("logOut").addEventListener("click", function(evt){
             localStorage.clear();
             window.location.href = "/index.html";
@@ -208,54 +260,6 @@
             window.location.href = "/userprofile.html";
         });
 
-        btnShowNewList.addEventListener("click", function() {
-        //new list input box 
-            let inpNewList = document.createElement("input");
-            divNewList.appendChild(inpNewList);
-        //#new list input box
-
-        //new list button
-            let btnAddNewList = document.createElement("button");
-            btnAddNewList.innerHTML = "Add new list";
-            divNewList.appendChild(btnAddNewList);
-
-            btnAddNewList.addEventListener("click", async function(evt){
-                let url = "/list";
-                let updata = {
-                    heading: inpNewList.value,
-                    userid: loggedInId
-                };
-                let token = localStorage.getItem("token");
-                let cfg = {
-                    method: "POST",
-                    headers: {
-                        "content-type":"application/json",
-                        "authorization": token
-                    },
-                    body: JSON.stringify(updata)
-                };
-
-                try{
-                    let response = await fetch(url, cfg);
-                    let data = await response.json();
-                    if(response.status != 200){
-                        throw data.error;
-                    }
-                    btnShowNewList.hidden = false;
-                    inpNewList.remove();
-                    btnAddNewList.remove();
-                    showAllToDoLists(); //refresh the list
-                }
-                catch(err){
-                    console.log(err);
-                }
-
-            });
-        //#new list button
-
-            btnShowNewList.hidden = true;
-
-        });
         
         
     </script>

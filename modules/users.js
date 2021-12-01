@@ -16,7 +16,7 @@ router.post("/users/login", async function(req, res, next){
         return;
     }
 
-    try {
+    try { 
         let data = await db.getUser(cred.username);
 
         if(data.rows.length > 0){
@@ -24,10 +24,10 @@ router.post("/users/login", async function(req, res, next){
         let username = data.rows[0].username;
         let passwordHash = data.rows[0].password;
         let salt = data.rows[0].salt;
-
+            
             if(authUtils.verifyPassword(cred.password, passwordHash, salt)){
                 let tok = authUtils.createToken(username, userid);
-
+                
                 res.status(200).json({
                     msg: "The login was successful!",
                     token: tok,
@@ -123,7 +123,7 @@ router.post("/updatepassword", async function(req, res, next){
     catch(err){
         next(err);
     }
-})
+}) 
 
 // delete a user ---------------------
 router.delete("/deleteuser", protect, async function(req, res, next){

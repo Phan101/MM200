@@ -21,6 +21,5 @@ function protect(req, res, next){
 
     next();
 }
-
 //export the function -----------
 module.exports = protect;
