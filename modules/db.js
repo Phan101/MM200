@@ -55,6 +55,7 @@ dbMethods.deleteFromDB = function(dbTable, dbCol, inpId){
     return pool.query(sql, values);//return the promise
 }
 dbMethods.changeDB = function(dbTable, dbCol, newDbValue, dbID, inpId){
+
     let sql = `UPDATE ${dbTable} SET ${dbCol} = $1 WHERE ${dbID} = $2 RETURNING *`;
     let values = [newDbValue, inpId];
     return pool.query(sql,values);//return the promise
@@ -69,7 +70,14 @@ dbMethods.getAllUsers = function() {
 //----------------------------------------------
 dbMethods.getUser = function(username) {
     let sql = "SELECT * FROM users WHERE username = $1";
-    let values = [username]; 
+    let values = [username];
+    return pool.query(sql, values);
+}
+
+//----------------------------------------------
+dbMethods.getId = function(id) {
+    let sql = "SELECT * FROM users WHERE id = $1";
+    let values = [id];
     return pool.query(sql, values);
 }
 //----------------------------------------------
@@ -78,6 +86,7 @@ dbMethods.createUser = function(username, password, salt) {
     let values = [username, password, salt];
     return pool.query(sql, values);
 }
+
 //----------------------------------------------
 dbMethods.deleteUser = function(id) {
     let sql = "DELETE FROM users WHERE id = $1 RETURNING *";

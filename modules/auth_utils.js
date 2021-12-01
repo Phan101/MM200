@@ -33,6 +33,14 @@ utils.createHash = function(password){
 
 }
 
+utils.updateHash = function(password, salt){
+    let hash = {};
+    hash.value = crypto.scryptSync(password, salt, 64).toString("hex");
+
+    return hash;
+
+}
+
 
 utils.createToken = function(username, userID){
 

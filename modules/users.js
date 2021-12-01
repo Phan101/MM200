@@ -59,9 +59,10 @@ router.get("/users", protect, async function(req, res, next){
 })
 
 // list user ---------------------
-router.get("/user", protect, async function(req, res, next){
+router.post("/getuser", protect, async function(req, res, next){
+    let updata = req.body;
     try {
-        let data = await db.getUser();
+        let data = await db.getId(updata.userId);
         res.status(200).json(data.rows).end();
     }
     catch(err) {
@@ -84,6 +85,7 @@ router.post("/users", async function(req, res, next){
 
     try{
         let data = await db.createUser(cred.username, hash.value, hash.salt);
+        
 
         if(data.rows.length > 0){
             res.status(200).json({msg: "The user was created successfully"}).end();
@@ -96,16 +98,26 @@ router.post("/users", async function(req, res, next){
     }
 })
 
-// delete a user ---------------------
-router.delete("/deleteuser", protect, async function(req, res, next){
+// update user password ---------------------
+router.post("/updatepassword", async function(req, res, next){
     let updata = req.body;
+    let credString = req.headers.authorization;
+    let cred = authUtils.decodeCred(credString);
+
+    if(cred.username === "" || cred.password === ""){
+        res.status(401).json({error: "No username or password"}).end();
+        return;
+    }
+
+    let hash = authUtils.updateHash(cred.password, updata.dbSalt);
+
     try{
-        let data = await db.deleteFromDB(updata.dbTable, updata.dbCol, updata.id);
-        if (data.rows.length > 0){
-            res.status(200).json({msg: "The user was deleted successfully"}).end();
-        }
-        else{
-            throw "The user couldn't be deleted";
+        let data = await db.changeDB(updata.dbTable, updata.dbCol, hash.value, updata.dbID, updata.inpId);
+
+        if(data.rows.length > 0){
+            res.status(200).json({msg: "The password was updated successfully"}).end();
+        } else {
+            throw "The password couldn't be updated";
         }
     }
     catch(err){
@@ -132,22 +144,26 @@ router.delete("/deleteuser", protect, async function(req, res, next){
 
 
 // change a user ------------
-router.post("/changeusername", async function(req,res,next){
+router.post("/changeuserinfo", async function(req,res,next){
 	let updata = req.body;
+
     console.log(updata);
 	
 	try{
 		let data = await db.changeDB(updata.dbTable, updata.dbCol, updata.newDbText, updata.dbID, updata.id);
+        console.log(data);
 		if (data.rows.length > 0){
-			res.status(200).json({msg: "The item was updated successfully"}).end();
+			res.status(200).json({msg: "The username was updated successfully"}).end();
 		}
 		else{
-			throw "The item couldn't be updated";
+			throw "The username couldn't be updated";
 		}
 	}catch (err){
 
 	}
 });
+
+
 
 // ----
 module.exports = router;

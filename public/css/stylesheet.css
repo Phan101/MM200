@@ -74,3 +74,8 @@
     grid-template-columns: 1fr 1fr; /* Equal width, fr = fractional unit */
     grid-gap: 20px;
 }
+
+/* CSS for userprofile */
+#profileDiv, #changePasswordDiv {
+    display: none;
+}
