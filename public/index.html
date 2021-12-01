@@ -12,26 +12,40 @@
     <div class="main">
         <h1 class="titleText">Logg inn</h1>
         <input id="inpUsername" type="text" placeholder="Username"/> <br>
-        <input id="inpPassword" type="password" placeholder="Password"/><input type="checkbox" onclick="showPw()">Show password<br><br>
-    
+        <input id="inpPassword" type="password" placeholder="Password"/><input id="showPass" type="checkbox">Show password<br><br>
         <button id="btnLogin">Logg inn</button>
-        <button id="btnSignUp">Sign up</button><br>
+        <p id="register">New user? Click to register</p>
         <h3 id="txtResult"></h3>
+
+        <!-- Modal -->
+        <div id="signupModal" class="modal">
+            <!-- Modal content -->
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                
+                <input id="inpUsernameReg" type="text" placeholder="Username"/><br>
+                <input id="inpPasswordReg" type="password" placeholder="Password"/><input id="showPassReg" type="checkbox">Show password<br><br>
+                <button id="btnSignUp">Sign up</button><br>
+            </div>
+        </div>
     </div>
     <!------------- JavaScript --------------->
     <script>
         let inpUsername = document.getElementById("inpUsername");
         let inpPassword = document.getElementById("inpPassword");
+        let inpUsernameReg = document.getElementById("inpUsernameReg");
+        let inpPasswordReg = document.getElementById("inpPasswordReg");
         let btnLogin = document.getElementById("btnLogin");
         let txtResult = document.getElementById("txtResult");
         let btnSignUp = document.getElementById("btnSignUp");
+        let showPass = document.getElementById("showPass");
+        let showPassReg = document.getElementById("showPassReg");
 
         // Skip login if token is stored.
           if (localStorage.token){
             window.location.href = "/todoLists.html";
         }
         
- 
         btnLogin.addEventListener("click", async function(evt){
             let url = "/users/login";
             let credString = createCredentialString(inpUsername.value, inpPassword.value)
@@ -63,7 +77,7 @@
 
         btnSignUp.addEventListener("click", async function(evt){
             let url = "/users";
-            let credString = createCredentialString(inpUsername.value, inpPassword.value);
+            let credString = createCredentialString(inpUsernameReg.value, inpPasswordReg.value);
 
             let cfg = {
                 method: "POST",
@@ -92,14 +106,43 @@
             return `basic ${b64Str}`;
         }
 
-        // Show password checkbox
-        function showPw(){
-            if(inpPassword.type === "password"){
-                inpPassword.type = "text";
+        // Show password checkbox - login
+        showPass.addEventListener("change", function(){
+            if(this.checked){
+                inpPassword.type ="text";
             } else {
                 inpPassword.type = "password";
             }
+        })
+        
+        showPassReg.addEventListener("change", function(){
+            if(this.checked){
+                inpPasswordReg.type = "text";
+            } else {
+                inpPasswordReg.type = "password";
+            }
+        });
+
+        // ------ Modal
+        let modal = document.getElementById("signupModal");
+        let registerBtn = document.getElementById("register");
+        let span = document.getElementsByClassName("close")[0];
+
+        // Åpne modal
+        registerBtn.onclick = function(){
+            modal.style.display = "block";
         }
+
+        span.onclick = function(){
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(evt){
+            if(evt.target == modal){
+                modal.style.display = "none";
+            }
+        }
+        
     </script>
 
     <!---------------- CSS ------------------->
