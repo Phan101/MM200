@@ -33,8 +33,11 @@
             let token = localStorage.getItem("token");
             let loggedInUser = await getDecryptedToken(token);
             let loggedInId = loggedInUser.userid;
+        
         //show new list div   
-            btnShowNewList.addEventListener("click", function() {
+            btnShowNewList.addEventListener("click", newListEvent);
+    //#show new list div   
+            function newListEvent() {
                 
             //new list input box 
                 let inpNewList = document.createElement("input");
@@ -69,6 +72,7 @@
                             throw data.error;
                         }
                         btnShowNewList.hidden = false;
+                        btnShowNewList.removeEventListener("click", newListEvent);
                         inpNewList.remove();
                         btnAddNewList.remove();
                         showAllToDoLists(); //refresh the list
@@ -79,11 +83,8 @@
 
                 });
             //#new list button
-
                 btnShowNewList.hidden = true;
-
-            });
-    //#show new list div   
+            }
         let itemUrl = "/itemlist";
         let listUrl = "/list";
         let cfg = {
