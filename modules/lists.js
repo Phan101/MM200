@@ -2,7 +2,7 @@ const express = require("express");
 const db = require("./db.js");
 const protect = require("./auth.js");
 const router = express.Router();
- 
+  
 
 //-----------------------LISTS-----------------------
 router.get("/list", protect, async function(req, res, next) {
