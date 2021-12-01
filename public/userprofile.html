@@ -9,7 +9,7 @@
   </head>
   <body>
     <!----------- HTML-elements -------------->
-    <a href="todoLists.html">Back</a>
+    <a href="mylist.html">Back</a>
     <button id="logOut">Logout</button>
     <p id="userProfile" style="font-size:200%"></p>
     <button id="changeUsername">Change Username</button>
@@ -50,10 +50,7 @@
       let verifyBtn = document.getElementById("verifyBtn"); // Change password
       let profileDiv = document.getElementById("profileDiv");
       let changePasswordDiv = document.getElementById("changePasswordDiv");
-      
-      let changeUsername = [];
-
-        
+  
       loadScreen(localStorage.idAuth);
       async function loadScreen(id){
         let url = "/getuser";
@@ -67,6 +64,7 @@
           headers: {
             "content-type": "application/json",
             authorization: token,
+            userId: id,
           },
           body: JSON.stringify(updata),
         };
@@ -79,11 +77,13 @@
             }
 
               let userProfile = document.getElementById("userProfile");
-              userProfile.innerHTML = `Welcome to your profile, <b>${data[0].username}</b>. (id:${data[0].id})`;
+              userProfile.innerHTML = `Welcome to your profile, <b>${data[0].username}</b>.`;
       } catch (error) {
             console.log(error);
           }
         }
+
+        //Change Username
 
       document.getElementById("changeUsername").addEventListener("click", async function (evt) {
         let url = "/getuser";
@@ -108,7 +108,6 @@
               throw data.error;
             }
           let loginUsername = data[0].username;
-          console.log(loginUsername);
 
             showProfileDiv();
 
@@ -129,8 +128,7 @@
                 let data = await response.json();
 
                 if(loginUsername != inpUsername.value){
-                  console.log("feil")
-                  throw "Invalid username";
+                  throw "Invalid username and/or password";
                 }
                 
                 if (response.status != 200) {
@@ -146,32 +144,29 @@
                 profileDiv.appendChild(changeUsernameBtn);
 
                 changeUsernameBtn.addEventListener("click", async function (evt) {
+                  txtResult.innerHTML = "";
                   let newUsername = document.getElementById("newUsername");
-                  changeUsername.value = newUsername.value;
-                  changeUsername.id = localStorage.idAuth;
                   
-                  editUsername();
+                  editUsername(newUsername.value, localStorage.idAuth);
                   
                 });
               } catch (err) {
-                console.log(err);
-                txtResult.innerHTML = "Something went wrong - check the console window";
+                txtResult.innerHTML = err;
               }
             });
           } catch (error) {
-            console.log(error);
           }
         });
 
-      async function editUsername() {
+      async function editUsername(newText, userId) {
         let url = "/changeuserinfo";
         let token = localStorage.getItem("token");
         let updata = {
           dbTable: "users",
           dbCol: "username",
-          newDbText: changeUsername.value,
+          newDbText: newText,
           dbID: "id",
-          id: changeUsername.id,
+          id: userId,
         };
 
         let cfg = {
@@ -190,10 +185,15 @@
             throw data.error;
           }
         } catch (error) {
-          console.log(error);
+          txtResult.innerHTML = error;
+
         }
-        location.reload(); // Refresher for å gi nye profilnavnet
+        if(txtResult.innerHTML == ""){
+          location.reload(); // Refresher for å gi nye profilnavnet
       }
+    }
+
+      // -- END CHANGE USERNAME
 
       // ----- Delete user
       document.getElementById("deleteUser").addEventListener("click", confirmDelete);
@@ -267,6 +267,7 @@
             }
             showChangePasswordDiv();
             verifyBtn.addEventListener("click", async function (evt) {
+              txtResult.innerHTML = "";
               let url = "/users/login";
               let credString = createCredentialString(
                 inpUsername2.value,
@@ -286,9 +287,8 @@
 
                 if(inpId != localStorage.idAuth){
                   console.log("feil")
-                  throw "Invalid username";
+                  throw "Invalid username and/or password";
                 }
-                console.log("riktig verifisering");
                 changePasswordDiv.innerHTML = "<h3>Type in your new password</h3>";
                 changePasswordDiv.innerHTML += "<input id='newPassword' type='text' placeholder='New Password'/><br><br>";
 
@@ -303,7 +303,7 @@
                 });
                 
               } catch (error) {
-            console.log(error);
+            txtResult.innerHTML = error;
           }
       });
     } catch (error) {
@@ -374,6 +374,15 @@
           profileDiv.style.display = "none";
         }
       }
+
+      // Show password checkbox
+      function showPw(){
+            if(inpPassword.type === "password"){
+                inpPassword.type = "text";
+            } else {
+                inpPassword.type = "password";
+            }
+        }
 
       // Credentials
       function createCredentialString(username, password) {
