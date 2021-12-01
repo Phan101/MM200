@@ -5,35 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Profile</title>
     <script src="js/security.js"></script>
-    <link rel="stylesheet" type="text/css" href="/css/stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="/css/stylesheet.css" />
   </head>
   <body>
     <!----------- HTML-elements -------------->
     <a href="mylist.html">Back</a>
     <button id="logOut">Logout</button>
-    <p id="userProfile" style="font-size:200%"></p>
+    <p id="userProfile" style="font-size: 200%"></p>
     <button id="changeUsername">Change Username</button>
     <button id="changePassword">Change Password</button>
     <button id="deleteUser">Delete User</button>
 
-    <hr/>
+    <hr />
     <div id="container"></div>
 
-    <div id="profileDiv">
+    <div id="usernameDiv">
       <h2><b>Change Username:</b></h2>
       <h3>Type in your old username</h3>
-        <input id='inpUsername' type='text' placeholder='Old Username'/><br>
+      <input id="inpUsername" type="text" placeholder="Old Username" /><br />
       <h3>Type in your password</h3>
-        <input id='inpPassword' type='password' placeholder='Password'/><input id="showPass_username" type="checkbox">Show password<br><br>
-        <button id="changeBtn">Change username</button>
+      <input id="inpPassword" type="password" placeholder="Password" /><input
+        id="showPass_username"
+        type="checkbox"
+      />Show password<br /><br />
+      <button id="changeBtn">Change username</button>
     </div>
-    <div id="changePasswordDiv">
+    <div id="passwordDiv">
       <h2><b>Change Password:</b></h2>
-                  <h3>Type in your username</h3>
-                  <input id='inpUsername2' type='text' placeholder='Username'/><br>
-                  <h3>Type in your old password</h3>
-                  <input id='inpPassword2' type='password' placeholder='Old Password'/><input id="showPass_password" type="checkbox">Show password<br><br>
-                  <button id="verifyBtn">Change Password</button>
+      <h3>Type in your username</h3>
+      <input id="inpUsername2" type="text" placeholder="Username" /><br />
+      <h3>Type in your old password</h3>
+      <input
+        id="inpPassword2"
+        type="password"
+        placeholder="Old Password"
+      /><input id="showPass_password" type="checkbox" />Show password<br /><br />
+      <button id="verifyBtn">Change Password</button>
     </div>
     <h3 id="txtResult"></h3>
     <!------------- JavaScript --------------->
@@ -49,14 +56,16 @@
 
       let changeBtn = document.getElementById("changeBtn"); // Change username
       let verifyBtn = document.getElementById("verifyBtn"); // Change password
-      let profileDiv = document.getElementById("profileDiv");
-      let changePasswordDiv = document.getElementById("changePasswordDiv");
+      let usernameDiv = document.getElementById("usernameDiv");
+      let passwordDiv = document.getElementById("passwordDiv");
 
       let showPass_username = document.getElementById("showPass_username");
       let showPass_password = document.getElementById("showPass_password");
-        
+
+      let userInfo = {};
       loadScreen();
-      async function loadScreen(){
+
+      async function loadScreen() {
         let url = "/getuser";
         let token = localStorage.getItem("token");
 
@@ -72,96 +81,73 @@
           },
         };
 
-          try {
-            let response = await fetch(url, cfg);
-            let data = await response.json();
+        try {
+          let response = await fetch(url, cfg);
+          let data = await response.json();
 
-            if (response.status != 200) {
-              throw data.error;
-            }
-
-              let userProfile = document.getElementById("userProfile");
-              userProfile.innerHTML = `Welcome to your profile, <b>${data[0].username}</b>.`;
-      } catch (error) {
-            console.log(error);
+          if (response.status != 200) {
+            throw data.error;
           }
+
+          userInfo = {
+            id: data[0].id,
+            username: data[0].username,
+            salt: data[0].salt,
+          };
+
+          let userProfile = document.getElementById("userProfile");
+          userProfile.innerHTML = `Welcome to your profile, <b>${userInfo.username}</b>.`;
+        } catch (error) {
+          console.log(error);
         }
+      }
 
-        //Change Username
-
+      //Change Username
       document.getElementById("changeUsername").addEventListener("click", async function (evt) {
-        let url = "/getuser";
-        let token = localStorage.getItem("token");
+          showChangeUsernameDiv();
 
-        let loggedInUser = await getDecryptedToken(token);
-        let loggedInId = loggedInUser.userid;
+          // Verify login
+          changeBtn.addEventListener("click", async function (evt) {
+            txtResult.innerHTML = "";
+            let url = "/users/login";
+            let credString = createCredentialString(
+              inpUsername.value,
+              inpPassword.value
+            );
 
-        let cfg = {
-          method: "GET",
-          headers: {
-            "content-type": "application/json",
-            authorization: token,
-            userId: loggedInId,
-          },
-        };
-          try {
-            let response = await fetch(url, cfg);
-            let data = await response.json();
+            let cfg = {
+              method: "POST",
+              headers: { authorization: credString },
+            };
 
-            if (response.status != 200) {
-              throw data.error;
-            }
-          let loginUsername = data[0].username;
+            try {
+              let response = await fetch(url, cfg);
+              let data = await response.json();
 
-            showProfileDiv();
-
-            changeBtn.addEventListener("click", async function (evt) {
-              txtResult.innerHTML = "";
-              let url = "/users/login";
-              let credString = createCredentialString(
-                inpUsername.value,
-                inpPassword.value
-              );
-
-              let cfg = {
-                method: "POST",
-                headers: { authorization: credString },
-              };
-
-              try {
-                let response = await fetch(url, cfg);
-                let data = await response.json();
-
-                if(loginUsername != inpUsername.value){
-                  throw "Invalid username and/or password";
-                }
-                
-                if (response.status != 200) {
-                  throw data.error;
-                }
-                
-                profileDiv.innerHTML = "<h3>Type in your new username</h3>";
-                profileDiv.innerHTML +=
-                  "<input id='newUsername' type='text' placeholder='New Username'/><br><br>";
-
-                let changeUsernameBtn = document.createElement("button");
-                changeUsernameBtn.innerHTML = "Change";
-                profileDiv.appendChild(changeUsernameBtn);
-
-                changeUsernameBtn.addEventListener("click", async function (evt) {
-                  let newUsername = document.getElementById("newUsername");
-                  changeUsername.value = newUsername.value;
-                  changeUsername.id = loggedInId;
-                  
-                  editUsername(newUsername.value, loggedInId);
-                  
-                });
-              } catch (err) {
-                txtResult.innerHTML = err;
+              if (userInfo.username != inpUsername.value) {
+                throw "Invalid username and/or password";
               }
-            });
-          } catch (error) {
-          }
+
+              if (response.status != 200) {
+                throw data.error;
+              }
+
+              usernameDiv.innerHTML = "<h3>Type in your new username</h3>";
+              usernameDiv.innerHTML += "<input id='newUsername' type='text' placeholder='New Username'/><br><br>";
+
+              let changeUsernameBtn = document.createElement("button");
+              changeUsernameBtn.innerHTML = "Change";
+              usernameDiv.appendChild(changeUsernameBtn);
+
+              changeUsernameBtn.addEventListener("click", async function (evt) {
+                let newUsername = document.getElementById("newUsername");
+
+                editUsername(newUsername.value, userInfo.id);
+              });
+            } catch (err) {
+              txtResult.innerHTML = err;
+            }
+          });
         });
 
       async function editUsername(newText, userId) {
@@ -192,20 +178,18 @@
           }
         } catch (error) {
           txtResult.innerHTML = error;
-
         }
-        if(txtResult.innerHTML == ""){
-          location.reload(); // Refresher for å gi nye profilnavnet
+        if (txtResult.innerHTML == "") {
+          location.reload(); // Refresher for å printe ut nye profilnavnet
+        }
       }
-    }
-
       // -- END CHANGE USERNAME
 
       // ----- Delete user
       document.getElementById("deleteUser").addEventListener("click", confirmDelete);
-      function confirmDelete(){
+      function confirmDelete() {
         let confirmUserDelete = confirm("Are you sure you want to delete user?");
-        if(confirmUserDelete){
+        if (confirmUserDelete) {
           deleteUser();
           localStorage.clear();
           window.location.href = "/index.html";
@@ -216,13 +200,10 @@
         let url = "/deleteuser";
         let token = localStorage.getItem("token");
 
-        let loggedInUser = await getDecryptedToken(token);
-        let loggedInId = loggedInUser.userid;
-
         let updata = {
           dbTable: "users",
           dbCol: "id",
-          id: loggedInId,
+          id: userInfo.id,
         };
 
         let cfg = {
@@ -241,158 +222,120 @@
           if (response.status !== 200) {
             throw data.error;
           }
-
         } catch (error) {
           console.log(error);
         }
       }
+      // END DELETE USER
 
-       
+      //CHANGE PASSWORD
       document.getElementById("changePassword").addEventListener("click", async function (evt) {
-        let url = "/getuser";
-        let token = localStorage.getItem("token");
+          showChangePasswordDiv();
 
-        let loggedInUser = await getDecryptedToken(token);
-        let loggedInId = loggedInUser.userid;
+          verifyBtn.addEventListener("click", async function (evt) {
+            txtResult.innerHTML = "";
+            let url = "/users/login";
+            let credString = createCredentialString(
+              inpUsername2.value,
+              inpPassword2.value
+            );
 
-        let cfg = {
-          method: "GET",
-          headers: {
-            "content-type": "application/json",
-            authorization: token,
-            userId: loggedInId,
-          },
-        };
-          try {
-            let response = await fetch(url, cfg);
-            let data = await response.json();
-
-            let inpId = data[0].id;
-            let salt = data[0].salt;
-            let username = data[0].username;
-
-            if (response.status != 200) {
-              throw data.error;
-            }
-            showChangePasswordDiv();
-            verifyBtn.addEventListener("click", async function (evt) {
-              txtResult.innerHTML = "";
-              let url = "/users/login";
-              let credString = createCredentialString(
-                inpUsername2.value,
-                inpPassword2.value
-              );
-
-              let cfg = {
-                method: "POST",
-                headers: { authorization: credString },
-              };
-              try {
-                let response = await fetch(url, cfg);
-                let data = await response.json();
-                if (response.status != 200) {
-                  throw data.error;
-                }
-
-                if(inpId != loggedInId){
-                  console.log("feil")
-                  throw "Invalid username and/or password";
-                }
-                changePasswordDiv.innerHTML = "<h3>Type in your new password</h3>";
-                changePasswordDiv.innerHTML += "<input id='newPassword' type='text' placeholder='New Password'/><br><br>";
-
-                let changePWBtn = document.createElement("button");
-                changePWBtn.innerHTML = "Update password";
-                changePasswordDiv.appendChild(changePWBtn);
-
-                changePWBtn.addEventListener("click", async function (evt) {
-                  let newPassword = document.getElementById("newPassword");
-                  newPassword = newPassword.value;
-                  updatePassword(username, newPassword, salt, inpId);
-                });
-                
-              } catch (error) {
-            txtResult.innerHTML = error;
-          }
-      });
-    } catch (error) {
-          console.log(error);
-        }
-    });
-
-    async function updatePassword(username, password, salt, inpId){
-      let url = "/updatepassword";
-            let credString = createCredentialString(username, password)
-
-            let updata = {
-            dbSalt: salt,
-            dbTable: "users",
-            dbCol: "password",
-            inpId: inpId,
-            dbID: "id",
-        }; 
-            
             let cfg = {
-                method: "POST",
-                headers: {
-                    "content-type":"application/json",
-                    "authorization":credString
-                },
-                body: JSON.stringify(updata)
-            }
+              method: "POST",
+              headers: { authorization: credString },
+            };
+            try {
+              let response = await fetch(url, cfg);
+              let data = await response.json();
+              if (response.status != 200) {
+                throw data.error;
+              }
 
-            try{
-                let response = await fetch(url, cfg);
-                let data = await response.json();
+              passwordDiv.innerHTML = "<h3>Type in your new password</h3>";
+              passwordDiv.innerHTML += "<input id='newPassword' type='text' placeholder='New Password'/><br><br>";
 
-                if(response.status !== 200){
-                    throw data.error;
-                }
-                txtResult.innerHTML = data.msg
-            }
-            catch(err){
-                console.log(err);
-                txtResult.innerHTML = "Something went wrong - check the console window";
-            }
-        };
-          
+              let changePWBtn = document.createElement("button");
+              changePWBtn.innerHTML = "Update password";
+              passwordDiv.appendChild(changePWBtn);
 
-      document.getElementById("logOut").addEventListener("click", function (evt) {
-          localStorage.clear();
-          window.location.href = "/index.html";
+              changePWBtn.addEventListener("click", async function (evt) {
+                let newPassword = document.getElementById("newPassword");
+                updatePassword(userInfo.username, newPassword.value, userInfo.salt, userInfo.id);
+              });
+            } catch (error) {
+              txtResult.innerHTML = error;
+            }
+          });
         });
 
-      function showProfileDiv(){
+      async function updatePassword(username, password, salt, inpId) {
+        let url = "/updatepassword";
+        let credString = createCredentialString(username, password);
+
+        let updata = {
+          dbSalt: salt,
+          dbTable: "users",
+          dbCol: "password",
+          inpId: inpId,
+          dbID: "id",
+        };
+
+        let cfg = {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            authorization: credString,
+          },
+          body: JSON.stringify(updata),
+        };
+
+        try {
+          let response = await fetch(url, cfg);
+          let data = await response.json();
+
+          if (response.status !== 200) {
+            throw data.error;
+          }
+          txtResult.innerHTML = data.msg;
+        } catch (err) {
+          console.log(err);
+          txtResult.innerHTML =
+            "Something went wrong - check the console window";
+        }
+      }
+      // END CHANGE PASSWORD
+
+      function showChangeUsernameDiv() {
         txtResult.innerHTML = "";
-        if(profileDiv.style.display === "block"){
-          profileDiv.style.display = "none";
+        if (usernameDiv.style.display === "block") {
+          usernameDiv.style.display = "none";
         } else {
-          profileDiv.style.display = "block";
-          changePasswordDiv.style.display = "none";
+          usernameDiv.style.display = "block";
+          passwordDiv.style.display = "none";
         }
       }
 
-      function showChangePasswordDiv(){
+      function showChangePasswordDiv() {
         txtResult.innerHTML = "";
-        if(changePasswordDiv.style.display === "block"){
-          changePasswordDiv.style.display = "none";
+        if (passwordDiv.style.display === "block") {
+          passwordDiv.style.display = "none";
         } else {
-          changePasswordDiv.style.display = "block";
-          profileDiv.style.display = "none";
+          passwordDiv.style.display = "block";
+          usernameDiv.style.display = "none";
         }
       }
 
       // Show password checkbox
-      showPass_username.addEventListener("change", function(){
-        if(this.checked){
+      showPass_username.addEventListener("change", function () {
+        if (this.checked) {
           inpPassword.type = "text";
         } else {
           inpPassword.type = "password";
         }
       });
 
-      showPass_password.addEventListener("change", function(){
-        if(this.checked){
+      showPass_password.addEventListener("change", function () {
+        if (this.checked) {
           inpPassword2.type = "text";
         } else {
           inpPassword2.type = "password";
@@ -405,6 +348,12 @@
         let b64Str = btoa(combinedStr);
         return `basic ${b64Str}`;
       }
+
+      // Log out button
+      document.getElementById("logOut").addEventListener("click", function (evt) {
+          localStorage.clear();
+          window.location.href = "/index.html";
+        });
     </script>
 
     <!---------------- CSS ------------------->
