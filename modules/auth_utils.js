@@ -64,7 +64,7 @@ utils.createToken = function(username, userID){
 
 
 utils.verifyToken = function(token){
-
+    
     //using the string-method split to extract the three parts into an array
     let tokenArr = token.split(".");
     let openPart = tokenArr[0] + "." + tokenArr[1];
@@ -86,13 +86,12 @@ utils.verifyToken = function(token){
         //the token has expired
         return false;
     }
-
+    
     //token ok
     return payload;
 
    
 }
-
  //------------------------
  utils.verifyPassword = function(pswFromUser, hashFromDB, saltFromDB){
 

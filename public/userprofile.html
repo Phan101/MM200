@@ -37,6 +37,7 @@
     </div>
     <h3 id="txtResult"></h3>
     <!------------- JavaScript --------------->
+    <script src="/js/getUser.js"></script>
     <script>
       let container = document.getElementById("container");
       let txtResult = document.getElementById("txtResult");
@@ -54,12 +55,16 @@
       let changeUsername = [];
 
         
-      loadScreen(localStorage.idAuth);
-      async function loadScreen(id){
+      loadScreen();
+      async function loadScreen(){
         let url = "/getuser";
         let token = localStorage.getItem("token");
+
+        let loggedInUser = await getDecryptedToken(token);
+        let loggedInId = loggedInUser.userid;
+
         let updata = {
-          userId: id,
+          userId: loggedInId,
         };
 
         let cfg = {
@@ -70,6 +75,7 @@
           },
           body: JSON.stringify(updata),
         };
+
           try {
             let response = await fetch(url, cfg);
             let data = await response.json();
@@ -88,8 +94,10 @@
       document.getElementById("changeUsername").addEventListener("click", async function (evt) {
         let url = "/getuser";
         let token = localStorage.getItem("token");
+        let loggedInUser = await getDecryptedToken(token);
+        let loggedInId = loggedInUser.userid;
         let updata = {
-          userId: localStorage.idAuth,
+          userId: loggedInId,
         };
 
         let cfg = {
@@ -148,7 +156,7 @@
                 changeUsernameBtn.addEventListener("click", async function (evt) {
                   let newUsername = document.getElementById("newUsername");
                   changeUsername.value = newUsername.value;
-                  changeUsername.id = localStorage.idAuth;
+                  changeUsername.id = loggedInId;
                   
                   editUsername();
                   
@@ -200,7 +208,7 @@
       function confirmDelete(){
         let confirmUserDelete = confirm("Are you sure you want to delete user?");
         if(confirmUserDelete){
-          deleteUser(localStorage.getItem("idAuth"));
+          deleteUser();
           localStorage.clear();
           window.location.href = "/index.html";
         }
@@ -242,8 +250,10 @@
       document.getElementById("changePassword").addEventListener("click", async function (evt) {
         let url = "/getuser";
         let token = localStorage.getItem("token");
+        let loggedInUser = await getDecryptedToken(token);
+        let loggedInId = loggedInUser.userid;
         let updata = {
-          userId: localStorage.idAuth,
+          userId: loggedInId,
         };
 
         let cfg = {
@@ -284,7 +294,7 @@
                   throw data.error;
                 }
 
-                if(inpId != localStorage.idAuth){
+                if(inpId != loggedInId){
                   console.log("feil")
                   throw "Invalid username";
                 }

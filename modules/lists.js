@@ -1,8 +1,22 @@
 const express = require("express");
 const db = require("./db.js");
 const protect = require("./auth.js");
+const authUtils = require("./auth_utils.js");
 const router = express.Router();
   
+router.get("/auth", protect, async function(req, res, next) {
+	let token = req.headers.authorization;
+	
+	
+	try{  
+		let data = await authUtils.verifyToken(token);
+		res.status(200).json(JSON.stringify(data)).end();
+	}
+	catch(err){
+		next(err);
+	}
+});
+
 
 //-----------------------LISTS-----------------------
 router.get("/list", protect, async function(req, res, next) {
@@ -15,6 +29,7 @@ router.get("/list", protect, async function(req, res, next) {
 		next(err);
 	}
 });
+
 router.post("/list", async function(req, res, next) {
 	let updata = req.body;
     try{
