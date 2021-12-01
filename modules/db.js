@@ -55,6 +55,7 @@ dbMethods.deleteFromDB = function(dbTable, dbCol, inpId){
     return pool.query(sql, values);//return the promise
 }
 dbMethods.changeDB = function(dbTable, dbCol, newDbValue, dbID, inpId){
+
     let sql = `UPDATE ${dbTable} SET ${dbCol} = $1 WHERE ${dbID} = $2 RETURNING *`;
     let values = [newDbValue, inpId];
     return pool.query(sql,values);//return the promise
