@@ -11,7 +11,7 @@
     <!----------- HTML-elements -------------->
     <a href="todoLists.html">Back</a>
     <button id="logOut">Logout</button>
-    <p id="userProfile" style="font-size:200%""></p>
+    <p id="userProfile" style="font-size:200%"></p>
     <button id="changeUsername">Change Username</button>
     <button id="changePassword">Change Password</button>
     <button id="deleteUser">Delete</button>
@@ -202,7 +202,7 @@
         if(confirmUserDelete){
           deleteUser(localStorage.getItem("idAuth"));
           localStorage.clear();
-          window.location.href = "userlogin.html";
+          window.location.href = "/index.html";
         }
       }
 
@@ -352,7 +352,7 @@
         .getElementById("logOut")
         .addEventListener("click", function (evt) {
           localStorage.clear();
-          window.location.href = "/userlogin.html";
+          window.location.href = "/index.html";
         });
 
       function showProfileDiv(){

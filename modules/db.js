@@ -55,6 +55,7 @@ dbMethods.deleteFromDB = function(dbTable, dbCol, inpId){
     return pool.query(sql, values);//return the promise
 }
 dbMethods.changeDB = function(dbTable, dbCol, newDbValue, dbID, inpId){
+
     let sql = `UPDATE ${dbTable} SET ${dbCol} = $1 WHERE ${dbID} = $2 RETURNING *`;
     let values = [newDbValue, inpId];
     return pool.query(sql,values);//return the promise
@@ -94,6 +95,25 @@ dbMethods.deleteUser = function(id) {
 }
 //----------------------------------------------
 //----------------------------------------------
-
+dbMethods.changeLastLogin = function (userid) {
+    
+    const d = new Date();
+    let day = d.getDate();
+    let month = d.getMonth();
+    let year = d.getFullYear();
+    
+    let hours = d.getHours();
+    let minutes = d.getMinutes();
+    let oneNumber = "0";
+    if (minutes.length === 1) {
+      minutes = oneNumber + minutes;
+    }
+   
+    let lastLoginText = `${day}.${month + 1}.${year} & ${hours}.${minutes}`;
+    let sql = `UPDATE users SET "lastLogin" = '${lastLoginText}' WHERE id = ${userid} RETURNING *`;
+    
+    
+    return pool.query(sql); //return the promise
+  };
 // export dbMethods---------------------------------
 module.exports = dbMethods;

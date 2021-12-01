@@ -1,0 +1,274 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>mylists</title>
+    <script src="js/security.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/stylesheet.css">
+</head>
+<body>
+    <a href="index.html">Home</a> 
+    <button id="logOut">Logout</button>
+    <button id="yourProfile">Your profile</button>
+    <div id="container" class="grid-container"></div>
+    
+    <div id="newItemDiv">
+        <button id="btnNewList">New List</button>
+    </div>
+    
+    <script src="/js/manipulatelists.js"></script>
+     
+    <script>
+        let container = document.getElementById("container");
+        let newItemBox = document.getElementById("newItemBox");
+        let submitListItemBtn = document.getElementById("submitListItem");
+        // new:
+        let btnShowNewList = document.getElementById("btnNewList");
+        let divNewList = document.getElementById("newItemDiv");
+        let loggedInId = localStorage.getItem("idAuth");
+        changeLastLogin();
+        showAllToDoLists();
+        //main show code    
+        async function showAllToDoLists() {
+
+        let itemUrl = "/itemlist";
+        let listUrl = "/list";
+        let token = localStorage.getItem("token");
+        let cfg = {
+            method: "GET",
+            headers: {"authorization":token}
+        }
+        try {
+            let itemsresponse = await fetch(itemUrl,cfg);
+            let itemsData = await itemsresponse.json();
+            
+
+            let listResponse = await fetch(listUrl,cfg);
+            let listsData = await listResponse.json();
+            
+
+            if(itemsresponse.status != 200){
+                throw itemsData.error;
+            }
+            if(listResponse.status != 200){
+                throw listsData.error;
+            }
+
+            container.innerHTML = ""; //delete previous content
+            
+            for(let listvalue of listsData){
+                if (parseInt(listvalue.user_id) === parseInt(loggedInId)) {
+                    
+                //create list div
+                    let listdiv = document.createElement("div");
+                    listdiv.setAttribute("id", "divContainer");
+                    listdiv.setAttribute("class", "grid-item");
+                    let divContent = `<h2>${listvalue.header}</h2>`;
+                    listdiv.innerHTML = divContent;
+                    container.appendChild(listdiv);
+                //#create list div
+                
+                //share/unshare
+                    let chkVisible = document.createElement("input");
+                    chkVisible.type = "checkbox";
+                    chkVisible.checked = listvalue.visible;
+                    listdiv.insertBefore(chkVisible, listdiv.lastElementChild);
+
+                    chkVisible.addEventListener("click", function() {
+                        changeAvailability(listvalue.id, chkVisible.checked)
+                    })
+                //#share/unshare
+
+                //edit list button
+                    let btnEditList = document.createElement("button");
+                    btnEditList.innerHTML = "Edit";
+                    listdiv.appendChild(btnEditList);
+
+                    btnEditList.addEventListener("click", function(){
+                        let inpEditList = document.createElement("input");
+                        
+                        if (btnStates.clicked === false) {
+                            listdiv.insertBefore(inpEditList, btnEditList);
+                            btnStates.clicked = true;
+                        }else{
+                            let inputBox = listdiv.getElementsByTagName("input")[0];
+                            editList(inputBox.value, listvalue.id);
+
+                            inputBox.remove();
+                            btnStates.clicked = false;
+                        }
+                        
+                    });
+                    
+                //#edit list button
+
+                //delete list button
+                    let btnDeleteList = document.createElement("button");
+                    btnDeleteList.innerHTML = "Delete";
+                    listdiv.appendChild(btnDeleteList);
+
+                    btnDeleteList.addEventListener("click", function(){
+                        let id = listvalue.id
+                        deleteAllListItems(id, itemsData);
+                        deleteList(id)
+                    });
+                //#delete list button
+                    
+                //new item button
+                    let newItemBtn = document.createElement("button");
+                    let btnStates = {clicked: false};
+                    newItemBtn.innerHTML = "new item";
+                    listdiv.appendChild(newItemBtn);
+
+                    newItemBtn.addEventListener("click", function(evt){
+                        
+                        let newListItemInp = document.createElement("input");
+                        
+                        if (btnStates.clicked === false) {
+                            listdiv.insertBefore(newListItemInp, newItemBtn);
+                            btnStates.clicked = true;
+                        }else{
+                            let inputBox = listdiv.getElementsByTagName("input")[1];
+                            newListItem(inputBox.value, listvalue.id)
+
+                            inputBox.remove();
+                            btnStates.clicked = false;
+                        }
+                    }); 
+                //#new item  button
+                    for (let itemvalue of itemsData){
+                        if (listvalue.id === itemvalue.listeid) {
+                            let listItemDiv = document.createElement("div");
+                            listdiv.appendChild(listItemDiv);
+                            
+                        // the text
+                            let itemText = document.createElement("p");
+                            itemText.innerHTML = itemvalue.text;
+                            listItemDiv.appendChild(itemText);
+                        //#the text    
+
+                        //delete button
+                            let delbtn = document.createElement("button");
+                            delbtn.innerHTML = "Delete";
+
+                            delbtn.addEventListener("click", function(evt){
+                                deleteListItem(itemvalue.itemid);
+                            });
+                            
+                            listItemDiv.appendChild(delbtn);
+
+                        // # delete button
+
+                        //<br>-tag
+                            let breakTag = document.createElement("br");
+                            listItemDiv.appendChild(breakTag);
+                        //#<br>-tag
+                        
+                        //edit button
+                            let editBtn = document.createElement("button");
+                            editBtn.innerHTML = "Edit";
+
+                            editBtn.addEventListener("click", function(evt){
+                                let originalText = itemvalue.text;
+                                if (itemText.innerHTML === originalText) {
+                                
+                                    let inputBox = document.createElement("input");
+                                    inputBox.type = "text";
+                                    inputBox.value = itemText.innerHTML;
+                                    itemText.innerHTML = "";
+                                    itemText.appendChild(inputBox);
+                                }else {
+                                    let editedInputBox = itemText.children[0];
+                                    let newText = editedInputBox.value;
+                                    editListItem(itemvalue.itemid,newText);
+                                    
+                                }
+                                
+                            });
+                            
+                            listItemDiv.insertBefore(editBtn, listItemDiv.lastElementChild);
+                        //# edit button
+                        }
+                    }
+                } 
+            }
+
+        }
+        catch(error) {
+            console.log(error);
+        }
+        }
+        //#main show code
+
+        document.getElementById("logOut").addEventListener("click", function(evt){
+            localStorage.clear();
+            window.location.href = "/index.html";
+        });
+
+        document.getElementById("yourProfile").addEventListener("click", function(evt){
+            window.location.href = "/userprofile.html";
+        });
+
+        btnShowNewList.addEventListener("click", function() {
+        //new list input box 
+            let inpNewList = document.createElement("input");
+            divNewList.appendChild(inpNewList);
+        //#new list input box
+
+        //new list button
+            let btnAddNewList = document.createElement("button");
+            btnAddNewList.innerHTML = "Add new list";
+            divNewList.appendChild(btnAddNewList);
+
+            btnAddNewList.addEventListener("click", async function(evt){
+                let url = "/list";
+                let updata = {
+                    heading: inpNewList.value,
+                    userid: loggedInId
+                };
+                let token = localStorage.getItem("token");
+                let cfg = {
+                    method: "POST",
+                    headers: {
+                        "content-type":"application/json",
+                        "authorization": token
+                    },
+                    body: JSON.stringify(updata)
+                };
+
+                try{
+                    let response = await fetch(url, cfg);
+                    let data = await response.json();
+                    if(response.status != 200){
+                        throw data.error;
+                    }
+                    btnShowNewList.hidden = false;
+                    inpNewList.remove();
+                    btnAddNewList.remove();
+                    showAllToDoLists(); //refresh the list
+                }
+                catch(err){
+                    console.log(err);
+                }
+
+            });
+        //#new list button
+
+            btnShowNewList.hidden = true;
+
+        });
+        
+        
+    </script>
+      <!---------------- CSS ------------------->
+      <style>        
+        #container > div{
+            border: 1px black solid;
+            margin: 5px;
+        }
+        #container > div >div{
+            border: 1px grey dotted;
+            margin: 5px;
+        }
+        </style>
+</body>
+</html>
