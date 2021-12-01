@@ -222,3 +222,35 @@ async function deleteListItem(listItemID){
     }
 }
 //#delete list item
+
+async function changeLastLogin(){
+    let url = "/lastlogin";
+    let token = localStorage.getItem("token");
+    let userId = localStorage.getItem("idAuth");
+
+    let updata = {
+        storageID: userId
+    }
+
+    let cfg = {
+        method: "POST",
+        headers: {
+            "content-type":"application/json",
+            "authorization":token
+        },
+        body: JSON.stringify(updata)
+
+    }
+    try{
+        let response = await fetch(url, cfg);
+        let data = await response.json();
+        if(response.status != 200){
+            throw data.error
+        }
+
+
+    }
+    catch(error){
+        console.log(error);
+    }
+}

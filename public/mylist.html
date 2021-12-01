@@ -25,7 +25,7 @@
         let btnShowNewList = document.getElementById("btnNewList");
         let divNewList = document.getElementById("newItemDiv");
         let loggedInId = localStorage.getItem("idAuth");
-        //loggedInId = loggedInId.parseInt;
+        changeLastLogin();
         showAllToDoLists();
         //main show code    
         async function showAllToDoLists() {
@@ -55,9 +55,7 @@
 
             container.innerHTML = ""; //delete previous content
             
-            for(let listvalue of listsData){  
-                //console.log(listvalue);
-                console.log(`listvalue.user_id: ${parseInt(listvalue.user_id)} +-+-+ loggedInId: ${parseInt(loggedInId)}`); 
+            for(let listvalue of listsData){
                 if (parseInt(listvalue.user_id) === parseInt(loggedInId)) {
                     
                 //create list div
@@ -240,7 +238,6 @@
                 try{
                     let response = await fetch(url, cfg);
                     let data = await response.json();
-                    console.log(data);
                     if(response.status != 200){
                         throw data.error;
                     }

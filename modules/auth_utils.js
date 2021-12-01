@@ -61,8 +61,7 @@ utils.verifyToken = function(token){
     let tokenArr = token.split(".");
     let openPart = tokenArr[0] + "." + tokenArr[1];
     let signToCheck = tokenArr[2];
-    console.log("--------------------");
-    console.log(tokenArr);
+    
     let secret = "dronningmaudsland"; //must be stored in an env variable in the finished app
     let sign = crypto.createHmac("SHA256", secret).update(openPart).digest("base64");
 
@@ -73,10 +72,7 @@ utils.verifyToken = function(token){
 
     let payloadTxt = Buffer.from(tokenArr[1], "base64").toString("ascii");
     let payload = JSON.parse(payloadTxt);
-    console.log("--------------------");
-    console.log(payloadTxt);
-    console.log(payload);
-    console.log("--------------------");
+    
     let expireTime = payload.iat + 24 * 60 * 60 * 1000; // time in millisec.
     if(expireTime < Date.now()){
         //the token has expired
