@@ -1,3 +1,4 @@
+
 //share/unshare
 async function changeAvailability(listID,available) {
     let url = "/changeitemlist";
@@ -226,8 +227,10 @@ async function deleteListItem(listItemID){
 async function changeLastLogin(){
     let url = "/lastlogin";
     let token = localStorage.getItem("token");
-    let userId = localStorage.getItem("idAuth");
-
+    let loggedInUser = await getDecryptedToken(token);
+    let loggedInId = loggedInUser.userid;
+    let userId = loggedInId;
+    
     let updata = {
         storageID: userId
     }
