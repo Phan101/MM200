@@ -28,7 +28,7 @@
 
         // Skip login if token is stored.
           if (localStorage.token){
-            window.location.href = "/todoLists.html";
+            window.location.href = "/mylist.html";
         }
         
  
@@ -52,7 +52,7 @@
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("idAuth", data.userid);
                 
-                window.location.href = "/todoLists.html";
+                window.location.href = "/mylist.html";
             }
             catch(err){
                 console.log(err);
