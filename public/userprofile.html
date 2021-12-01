@@ -14,7 +14,7 @@
     <p id="userProfile" style="font-size:200%"></p>
     <button id="changeUsername">Change Username</button>
     <button id="changePassword">Change Password</button>
-    <button id="deleteUser">Delete</button>
+    <button id="deleteUser">Delete User</button>
 
     <hr/>
     <div id="container"></div>
@@ -116,6 +116,7 @@
             showProfileDiv();
 
             changeBtn.addEventListener("click", async function (evt) {
+              txtResult.innerHTML = "";
               let url = "/users/login";
               let credString = createCredentialString(
                 inpUsername.value,
@@ -148,7 +149,6 @@
                 profileDiv.appendChild(changeUsernameBtn);
 
                 changeUsernameBtn.addEventListener("click", async function (evt) {
-                  txtResult.innerHTML = "";
                   let newUsername = document.getElementById("newUsername");
                   changeUsername.value = newUsername.value;
                   changeUsername.id = loggedInId;
