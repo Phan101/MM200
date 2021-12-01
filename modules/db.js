@@ -86,6 +86,25 @@ dbMethods.deleteUser = function(id) {
 }
 //----------------------------------------------
 //----------------------------------------------
-
+dbMethods.changeLastLogin = function (userid) {
+    
+    const d = new Date();
+    let day = d.getDate();
+    let month = d.getMonth();
+    let year = d.getFullYear();
+    
+    let hours = d.getHours();
+    let minutes = d.getMinutes();
+    let oneNumber = "0";
+    if (minutes.length === 1) {
+      minutes = oneNumber + minutes;
+    }
+   
+    let lastLoginText = `${day}.${month + 1}.${year} & ${hours}.${minutes}`;
+    let sql = `UPDATE users SET "lastLogin" = '${lastLoginText}' WHERE id = ${userid} RETURNING *`;
+    
+    
+    return pool.query(sql); //return the promise
+  };
 // export dbMethods---------------------------------
 module.exports = dbMethods;

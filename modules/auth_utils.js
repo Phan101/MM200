@@ -39,18 +39,18 @@ utils.createToken = function(username, userID){
     //part 1 and 2 as JSON-text
     let part1 = JSON.stringify({"alg": "HS256", "typ": "JWT"});
     let part2 = JSON.stringify({"user": username, "userid": userID, "iat": Date.now()});
-
+    
     // part 1 and 2 as base64
     let b64Part1 = Buffer.from(part1).toString("base64");
     let b64Part2 = Buffer.from(part2).toString("base64");
-
+    
     // combine part 1 and 2 separated with . (period)
     let openPart = b64Part1 + "." + b64Part2;
-
+    
     //create the 3. part (signature) using a hash-function in the crypto-module
     let secret = "dronningmaudsland"; //must be stored in an env variable in the finished app
     let sign = crypto.createHmac("SHA256", secret).update(openPart).digest("base64");
-
+    
     return openPart + "." + sign;
 }
 
@@ -61,7 +61,7 @@ utils.verifyToken = function(token){
     let tokenArr = token.split(".");
     let openPart = tokenArr[0] + "." + tokenArr[1];
     let signToCheck = tokenArr[2];
-
+    
     let secret = "dronningmaudsland"; //must be stored in an env variable in the finished app
     let sign = crypto.createHmac("SHA256", secret).update(openPart).digest("base64");
 
@@ -72,7 +72,7 @@ utils.verifyToken = function(token){
 
     let payloadTxt = Buffer.from(tokenArr[1], "base64").toString("ascii");
     let payload = JSON.parse(payloadTxt);
-
+    
     let expireTime = payload.iat + 24 * 60 * 60 * 1000; // time in millisec.
     if(expireTime < Date.now()){
         //the token has expired
