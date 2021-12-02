@@ -47,7 +47,7 @@ router.post("/users/login", async function(req, res, next){
     }
 })
 
-// list all users ---------------------
+// list all users --------------------- 
 router.get("/users", protect, async function(req, res, next){
     try {
         let data = await db.getAllUsers();
@@ -60,7 +60,6 @@ router.get("/users", protect, async function(req, res, next){
 
 // list user ---------------------
 router.get("/getuser", protect, async function(req, res, next){
-    
     try {
         let data = await db.getId(req.headers.userid);
         res.status(200).json(data.rows).end();

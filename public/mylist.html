@@ -261,6 +261,7 @@
 
     //#main show code
         document.getElementById("logOut").addEventListener("click", function(evt){
+            changeLastLogout();
             localStorage.clear();
             window.location.href = "/index.html";
         });

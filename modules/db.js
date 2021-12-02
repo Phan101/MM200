@@ -39,13 +39,6 @@ dbMethods.createListItem = function(text, listeid){
     return pool.query(sql, values); 
     
 }
-//-----------------------------------------------
-dbMethods.deleteListItems = function(id){
-    let sql = "DELETE FROM itemlists WHERE itemid = $1 RETURNING *";
-    let values = [id];
-    return pool.query(sql, values);//return the promise
-}
-//-----------------------------------------------
 
 //----------------------------------------------
 //----------------------------------------------
@@ -85,13 +78,6 @@ dbMethods.getId = function(id) {
 dbMethods.createUser = function(username, password, salt) {
     let sql = "INSERT INTO users (id, username, password, salt) VALUES(DEFAULT, $1, $2, $3) returning *";
     let values = [username, password, salt];
-    return pool.query(sql, values);
-}
-
-//----------------------------------------------
-dbMethods.deleteUser = function(id) {
-    let sql = "DELETE FROM users WHERE id = $1 RETURNING *";
-    let values = [id];
     return pool.query(sql, values);
 }
 //----------------------------------------------

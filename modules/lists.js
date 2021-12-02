@@ -20,7 +20,6 @@ router.get("/auth", protect, async function(req, res, next) {
 
 //-----------------------LISTS-----------------------
 router.get("/list", protect, async function(req, res, next) {
-
 	try{  
 		let data = await db.getAllLists();
 		res.status(200).json(data.rows).end();
@@ -82,7 +81,7 @@ router.delete("/list", protect, async function(req, res, next){
 //---------------------------------------------------
 
 
-//-----------------------LISTS-----------------------
+//-----------------------LISTS ITEMS-----------------------
 router.get("/itemlist", protect, async function(req, res, next) {
 	try{  
 		let data = await db.getAllListItems();
@@ -142,9 +141,5 @@ router.post("/changeitemlist", protect, async function(req,res,next){
 	}
 });
 //---------------------------------------------------
-
-
-
-
 
 module.exports = router;

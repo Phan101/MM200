@@ -3,6 +3,5 @@ window.onload = function(){
       if(!token){
         window.location.href = "../userlogin.html";
       }
-
   };
   
