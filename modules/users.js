@@ -107,7 +107,7 @@ router.post("/updatepassword", async function(req, res, next){
         res.status(401).json({error: "No username or password"}).end();
         return;
     }
-
+    
     let hash = authUtils.updateHash(cred.password, updata.dbSalt);
 
     try{
