@@ -1,13 +1,49 @@
 
+//done checkbox
+async function changeItemDone(itemID,doneBool) {
+    let url = "/changelist";
+    let token = localStorage.getItem("token");
+    let updata = {
+        dbTable: "itemlists",
+        dbCol: "done",
+        newDbText: doneBool,
+        dbIfCol: "itemid",
+        id: itemID
+    }
+
+    let cfg = {
+        method: "POST",
+        headers: {
+            "content-type":"application/json",
+            "authorization":token
+        },
+        body: JSON.stringify(updata)
+    }
+    try{
+        
+        let response = await fetch(url, cfg);
+        let data = await response.json();
+
+        if(response.status != 200){
+            throw data.error
+        }
+
+        showAllToDoLists(); //refresh the list
+    }
+    catch(error){
+        console.log(error);
+    }     
+}
+//#done checkbox
 //share/unshare
 async function changeAvailability(listID,available) {
-    let url = "/changeitemlist";
+    let url = "/changelist";
     let token = localStorage.getItem("token");
     let updata = {
         dbTable: "todolists",
         dbCol: "visible",
         newDbText: available,
-        dbID: "id",
+        dbIfCol: "id",
         id: listID
     }
 
@@ -154,7 +190,7 @@ async function newListItem(itemText, listID){
 //edit list item
 async function editListItem(itemID, itemText){
     
-    let url = "/changeitemlist";
+    let url = "/changelist";
     let token = localStorage.getItem("token");
     let updata = {
         dbTable: "itemlists",

@@ -39,17 +39,14 @@ router.post("/list", async function(req, res, next) {
 		else{
 			throw "The list couldn't be created";
 		}
-        
-        res.status(200).send("the blogpost was created successfully").end();
 	}
 	catch(err){
 		next(err);
 	}
 });
-
+//---------------------------------------------------
 router.post("/changelist", protect, async function(req,res,next){
 	let updata = req.body;
-	
 	try{
 		let data = await db.changeDB(updata.dbTable, updata.dbCol, updata.newDbText, updata.dbIfCol, updata.id);
 		if (data.rows.length > 0){
@@ -125,21 +122,6 @@ router.delete("/itemlist", protect, async function(req, res, next){
 	}
 });
 
-router.post("/changeitemlist", protect, async function(req,res,next){
-	let updata = req.body;
-	
-	try{
-		let data = await db.changeDB(updata.dbTable, updata.dbCol, updata.newDbText, updata.dbIfCol, updata.id);
-		if (data.rows.length > 0){
-			res.status(200).json({msg: "The item was updated successfully"}).end();
-		}
-		else{
-			throw "The item couldn't be updated";
-		}
-	}catch (err){
-		next(err);
-	}
-});
-//---------------------------------------------------
+
 
 module.exports = router;
