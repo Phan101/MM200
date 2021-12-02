@@ -2,17 +2,20 @@
 <head>
     <meta charset="UTF-8">
     <title>mylists</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="js/security.js"></script>
     <link rel="stylesheet" type="text/css" href="css/stylesheet.css">
 </head>
 <body>
-    <button onclick="window.location.href=`users.html`">All Users</button>
-    <button onclick="window.location.href=`userprofile.html`">My Profile</button>
-    <button id="logOut">Logout</button>
+    <ul>
+        <li><a href="users.html">All Users</a></li>
+        <li><a href="userprofile.html">My Profile</a></li>
+        <li class="navRight"><a id="logOut">Logout</a></li>
+      </ul>
     <div id="container" class="grid-container"></div>
     
     <div id="newItemDiv">
-        <button id="btnNewList">New List</button>
+        <button id="btnNewList" class="greyButtons">New List</button>
     </div> 
 
     <script src="/js/getUser.js"></script>
@@ -43,6 +46,7 @@
     
         //new list button
             let btnAddNewList = document.createElement("button");
+            btnAddNewList.setAttribute("class", "greyButtons");
             btnAddNewList.innerHTML = "Add new list";
             divNewList.appendChild(btnAddNewList);
     
@@ -143,6 +147,7 @@
 
                 //edit list button
                     let btnEditList = document.createElement("button");
+                    btnEditList.setAttribute("class", "greyButtons");
                     btnEditList.innerHTML = "Edit";
                     listdiv.appendChild(btnEditList);
                     let editBtnStates = {clicked: false};
@@ -165,6 +170,7 @@
 
                 //delete list button
                     let btnDeleteList = document.createElement("button");
+                    btnDeleteList.setAttribute("class", "greyButtons");
                     btnDeleteList.innerHTML = "Delete";
                     listdiv.appendChild(btnDeleteList);
 
@@ -177,6 +183,7 @@
                     
                 //new item button
                     let newItemBtn = document.createElement("button");
+                    newItemBtn.setAttribute("class", "greyButtons");
                     let newItemBtnStates = {clicked: false};
                     newItemBtn.innerHTML = "new item";
                     listdiv.appendChild(newItemBtn);
@@ -221,6 +228,7 @@
 
                         //delete button
                             let delbtn = document.createElement("button");
+                            delbtn.setAttribute("class", "greyButtons");
                             delbtn.innerHTML = "Delete";
 
                             delbtn.addEventListener("click", function(evt){
@@ -237,6 +245,7 @@
                         
                         //edit button
                             let editBtn = document.createElement("button");
+                            editBtn.setAttribute("class", "greyButtons");
                             editBtn.innerHTML = "Edit";
 
                             editBtn.addEventListener("click", function(evt){
@@ -276,16 +285,5 @@
         });
         
     </script>
-      <!---------------- CSS ------------------->
-      <style>        
-        #container > div{
-            border: 1px black solid;
-            margin: 5px;
-        }
-        #container > div >div{
-            border: 1px grey dotted;
-            margin: 5px;
-        }
-        </style>
 </body>
 </html>
