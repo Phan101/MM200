@@ -11,9 +11,9 @@
 <body>
  
     <!----------- HTML-elements -------------->
-    <a href="index.html">Home</a> 
+    <button onclick="window.location.href=`mylist.html`">My lists</button>
+    <button onclick="window.location.href=`userprofile.html`">My Profile</button>
     <button id="logOut">Logout</button>
-    <button id="yourProfile">Your profile</button>
     <div id="container" class="grid-container"></div>
     <!------------- JavaScript --------------->
     <script src="/js/manipulatelists.js"></script>
@@ -95,9 +95,6 @@
         window.location.href = "/index.html";
     });
 
-    document.getElementById("yourProfile").addEventListener("click", function(evt){
-        window.location.href = "/userprofile.html";
-    });
 
     </script>
 

@@ -6,10 +6,9 @@
     <link rel="stylesheet" type="text/css" href="/css/stylesheet.css">
 </head>
 <body>
-    <a href="index.html">Home</a> 
+    <button onclick="window.location.href=`users.html`">All Users</button>
+    <button onclick="window.location.href=`userprofile.html`">My Profile</button>
     <button id="logOut">Logout</button>
-    <button id="yourProfile">Your profile</button>
-    <a href="users.html">See all profiles</a>
     <!--<input id="searchProfiles" type="text" placeholder="search">-->
     <div id="container" class="grid-container"></div>
     
@@ -135,6 +134,11 @@
                     })
                 //#share/unshare
 
+                    let checkLabel = document.createElement("label");
+                    checkLabel.innerHTML = "Public/Private";
+                    listdiv.insertBefore(checkLabel, listdiv.lastElementChild);
+
+
                 //edit list button
                     let btnEditList = document.createElement("button");
                     btnEditList.innerHTML = "Edit";
@@ -259,12 +263,6 @@
             localStorage.clear();
             window.location.href = "/index.html";
         });
-
-        document.getElementById("yourProfile").addEventListener("click", function(evt){
-            window.location.href = "/userprofile.html";
-        });
-
-        
         
     </script>
       <!---------------- CSS ------------------->
