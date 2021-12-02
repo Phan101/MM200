@@ -9,42 +9,47 @@
   </head>
   <body>
     <!----------- HTML-elements -------------->
-    <button onclick="window.location.href=`mylist.html`">My lists</button>
-    <button onclick="window.location.href=`todoLists.html`">All Users</button>
-    <button id="logOut">Logout</button>
-    <p id="userProfile" style="font-size: 200%"></p><hr>
-    <p id="lastLoggedIn"></p><hr>
-    <button id="changeUsername">Change Username</button>
-    <button id="changePassword">Change Password</button>
-    <button id="deleteUser">Delete User</button>
+    <ul>
+      <li><a href="mylist.html">My lists</a></li>
+      <li><a href="todoLists.html">All users</a></li>
+      <li class="navRight"><a id="logOut">Logout</a></li>
+    </ul>
+    <!--<button onclick="window.location.href=`mylist.html`">My lists</button>
+    <button onclick="window.location.href=`todoLists.html`">All Users</button>-->
+    <div id="topContainer" class="center">
+      <p id="userProfile" style="font-size: 200%"></p><hr>
+      <p id="lastLoggedIn"></p><hr>
+      <button id="changeUsername" class="changeButtons">Change Username</button>
+      <button id="changePassword" class="changeButtons">Change Password</button>
+      <button id="deleteUser" class="changeButtons">Delete User</button>
+  </div>
 
     <hr />
-    <div id="container"></div>
-
+    <div id="container" class="center changesDiv">
+<!-- Change username div -->
     <div id="usernameDiv">
       <h2><b>Change Username:</b></h2>
       <h3>Type in your old username</h3>
-      <input id="inpUsername" type="text" placeholder="Old Username" /><br />
+      <input id="inpUsername" type="text" placeholder="Old Username"/><br>
       <h3>Type in your password</h3>
-      <input id="inpPassword" type="password" placeholder="Password" /><input
-        id="showPass_username"
-        type="checkbox"
-      />Show password<br /><br />
+      <input id="inpPassword" type="password" placeholder="Password" /><br>
+      <input id="showPass_username" type="checkbox"/>Show password<br /><br>
       <button id="changeBtn">Change username</button>
     </div>
+<!-- Change username div end -->
+<!-- Change password div -->
     <div id="passwordDiv">
       <h2><b>Change Password:</b></h2>
       <h3>Type in your username</h3>
       <input id="inpUsername2" type="text" placeholder="Username" /><br />
       <h3>Type in your old password</h3>
-      <input
-        id="inpPassword2"
-        type="password"
-        placeholder="Old Password"
-      /><input id="showPass_password" type="checkbox" />Show password<br /><br />
+      <input id="inpPassword2" type="password" placeholder="Old Password"><br>
+      <input id="showPass_password" type="checkbox" />Show password<br><br>
       <button id="verifyBtn">Change Password</button>
     </div>
+  <!-- Change password div end -->
     <h3 id="txtResult"></h3>
+    </div>
     <!------------- JavaScript --------------->
     <script src="/js/getUser.js"></script>
     <script>
