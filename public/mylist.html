@@ -68,7 +68,6 @@
                     throw data.error;
                 }                    
                 btnShowNewList.hidden = false;
-                //btnShowNewList.removeEventListener("click", newListEvent);
                 inpNewList.remove();
                 btnAddNewList.remove();
                 showAllToDoLists(); //refresh the list               
@@ -203,7 +202,17 @@
                         if (listvalue.id === itemvalue.listeid) {
                             let listItemDiv = document.createElement("div");
                             listdiv.appendChild(listItemDiv);
-                            
+                        //done check box
+                            let chkDone = document.createElement("input");
+                            chkDone.type = "checkbox";
+                            chkDone.checked = itemvalue.done;
+                            listItemDiv.appendChild(chkDone);
+
+                            chkDone.addEventListener("click", function() {
+                                changeItemDone(itemvalue.itemid, chkDone.checked)
+                            })
+                        //#done check box
+
                         // the text
                             let itemText = document.createElement("p");
                             itemText.innerHTML = itemvalue.text;
