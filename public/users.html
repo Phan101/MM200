@@ -11,9 +11,13 @@
 <body>
  
     <!----------- HTML-elements -------------->
-    <button onclick="window.location.href=`mylist.html`">My lists</button>
-    <button onclick="window.location.href=`userprofile.html`">My Profile</button>
-    <button id="logOut">Logout</button>
+    <ul>
+        <li><a onclick="showAllUsers()">Back</a></li>
+        <li><a href="mylist.html">My lists</a></li>
+        <li><a href="userprofile.html">My Profile</a></li>
+        <li class="navRight"><a id="logOut">Logout</a></li>
+      </ul>
+
     <div id="container" class="grid-container"></div>
     <!------------- JavaScript --------------->
     
@@ -50,6 +54,7 @@
                 
                 //edit list button
                     let btnSeeUser = document.createElement("button");
+                    btnSeeUser.setAttribute("class", "greyButtons");
                     btnSeeUser.innerHTML = "See profile";
                     usersdiv.appendChild(btnSeeUser);
 
@@ -136,18 +141,6 @@
     });
     
     </script>
-
-    <!---------------- CSS ------------------->
-    <style>        
-    #container > div{
-        border: 1px black solid;
-        margin: 5px;
-    }
-    #container > div >div{
-        border: 1px grey dotted;
-        margin: 5px;
-    }
-    </style>
 
 </body>
 

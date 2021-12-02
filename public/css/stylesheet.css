@@ -1,12 +1,51 @@
-
 /* GENERAL */
 .center {
     text-align: center;
 }
 
 body {
+    margin: 0;
     font-family: "Ubuntu", sans-serif;
 }
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+li a:hover {
+    background-color: rgb(20, 20, 20);
+}
+
+.navRight {
+    background-color: #9a39ac;
+    float: right;
+    cursor: pointer;
+}
+
+#container > div{
+    border: 1px black solid;
+    margin: 5px;
+}
+#container > div >div{
+    border: 1px grey dotted;
+    margin: 5px;
+}
+
 /* CSS for Login page */
 .main {
     background-color: #FFFFFF;
@@ -31,8 +70,8 @@ body {
     color: #3C3C3C;
 }
 
-#inpUsername, #inpPassword, #inpUsernameReg, #inpPasswordReg {
-    width: 76%;
+#inpUsername, #inpPassword, #inpUsernameReg, #inpPasswordReg, #inpUsername2, #inpPassword2 {
+    width: 250px;
     color: rgb(38, 50, 56);
     font-weight: 700;
     font-size: 14px;
@@ -69,21 +108,31 @@ body {
     background: linear-gradient(to right, #9a39ac, #ff00ea);
 }
 
-/* CSS for todolists.html */
-#divContainer {
-    max-width: 500px;
-}
-
-.grid-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* Equal width, fr = fractional unit */
-    grid-gap: 20px;
-}
 
 /* CSS for userprofile */
 #usernameDiv, #passwordDiv {
     display: none;
 }
+
+.greyButtons {
+    display:inline-block;
+    padding:0.2em 1.45em;
+    margin:0.1em;
+    border:0.15em solid #CCCCCC;
+    box-sizing: border-box;
+    text-decoration:none;
+    font-weight:400;
+    color:#000000;
+    background-color:#CCCCCC;
+    text-align:center;
+    position:relative;
+}
+
+.greyButtons:hover {
+    border-color:#7a7a7a;
+}
+
+/* CSS for modal */
 
 .modal {
     display: none;
