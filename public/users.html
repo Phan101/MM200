@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+    <link rel="shortcut icon" href="#">
+    <title>users</title>
+    <script src="js/security.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/stylesheet.css">
+</head> 
+<body>
+ 
+    <!----------- HTML-elements -------------->
+    <a href="index.html">Home</a> 
+    <button id="logOut">Logout</button>
+    <button id="yourProfile">Your profile</button>
+    <button onclick="showAllUsers()">Back</button>
+    <div id="container" class="grid-container"></div>
+    <!------------- JavaScript --------------->
+    <script src="/js/manipulatelists.js"></script>
+    <script>
+        let container = document.getElementById("container");
+        
+        showAllUsers();
+    //main show code    
+        async function showAllUsers() {
+            container.innerHTML = "";
+            let userUrl = "/users";
+            let token = localStorage.getItem("token");
+            let cfg = {
+                method: "GET",
+                headers: {"authorization":token}
+            }
+            try {
+                let userResponse = await fetch(userUrl,cfg);
+                let userData = await userResponse.json();
+                for (const userValue of userData) {
+                //create user div
+                    let usersdiv = document.createElement("div");
+                    usersdiv.setAttribute("id", "divContainer");
+                    usersdiv.setAttribute("class", "grid-item");
+                    container.appendChild(usersdiv);
+                //#create user div
+                // the text
+                    let userTxt = document.createElement("p");
+                    userTxt.innerHTML = userValue.username;
+                    usersdiv.appendChild(userTxt);
+                //#the text 
+                
+                //edit list button
+                    let btnSeeUser = document.createElement("button");
+                    btnSeeUser.innerHTML = "See profile";
+                    usersdiv.appendChild(btnSeeUser);
+
+                    btnSeeUser.addEventListener("click", function(){
+                        showUser(userValue.id);
+                    });
+                    
+                //#edit list button
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+    //#main show code    
+    async function showUser(id) {
+        container.innerHTML = "";
+        itemUrl = "/itemlist";
+            let listUrl = "/list";
+            let token = localStorage.getItem("token");
+            let cfg = {
+                method: "GET",
+                headers: {"authorization":token}
+            }
+            try {
+               let itemsresponse = await fetch(itemUrl,cfg);
+                let itemsData = await itemsresponse.json();
+                
+
+                let listResponse = await fetch(listUrl,cfg);
+                let listsData = await listResponse.json();
+                
+
+                if(itemsresponse.status != 200){
+                    throw itemsData.error;
+                }
+                if(listResponse.status != 200){
+                    throw listsData.error;
+                }
+
+                container.innerHTML = ""; //delete previous content
+                
+                for(let listvalue of listsData){   
+                    console.log(listvalue);
+                    if (listvalue.user_id === id && listvalue.visible === true){                    
+                    //create list div
+                        let listdiv = document.createElement("div");
+                        listdiv.setAttribute("id", "divContainer");
+                        listdiv.setAttribute("class", "grid-item");
+                        let divContent = `<h2>${listvalue.header}</h2>`;
+                        listdiv.innerHTML = divContent;
+                        container.appendChild(listdiv);
+                    //#create list div
+                    
+                        for (let itemvalue of itemsData){
+                            if (listvalue.id === itemvalue.listeid) {
+                                let listItemDiv = document.createElement("div");
+                                listdiv.appendChild(listItemDiv);
+                                
+                            // the text
+                                let itemText = document.createElement("p");
+                                itemText.innerHTML = itemvalue.text;
+                                listItemDiv.appendChild(itemText);
+                            //#the text    
+
+                            //<br>-tag
+                                let breakTag = document.createElement("br");
+                                listItemDiv.appendChild(breakTag);
+                            //#<br>-tag
+                            
+                            }
+                        }
+                    } 
+                }
+            
+            }
+            catch(error) {
+                console.log(error);
+            }
+    };
+
+    document.getElementById("logOut").addEventListener("click", function(evt){
+        localStorage.clear();
+        window.location.href = "/index.html";
+    });
+
+    document.getElementById("yourProfile").addEventListener("click", function(evt){
+        window.location.href = "/userprofile.html";
+    });
+    
+    </script>
+
+    <!---------------- CSS ------------------->
+    <style>        
+    #container > div{
+        border: 1px black solid;
+        margin: 5px;
+    }
+    #container > div >div{
+        border: 1px grey dotted;
+        margin: 5px;
+    }
+    </style>
+
+</body>
+
+</html>
