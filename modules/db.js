@@ -1,7 +1,6 @@
 // setup connection ----------------------------
 const pg = require("pg");
-const dbURI = "postgres://ycandhezmksugr:38005b12ee1e7112d036d50de7e0ee9cec41c9cfe7d0f4d06bd5b30a47962eb1@ec2-54-220-223-3.eu-west-1.compute.amazonaws.com:5432/d4kl9drthfs4l";
-const connstring = process.env.DATABASE_URL || dbURI;
+const connstring = process.env.DATABASE_URL;
 const pool = new pg.Pool({
 	connectionString: connstring,
 	ssl:{rejectUnauthorized: false}
