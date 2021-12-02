@@ -39,13 +39,6 @@ dbMethods.createListItem = function(text, listeid){
     return pool.query(sql, values); 
     
 }
-//-----------------------------------------------
-dbMethods.deleteListItems = function(id){
-    let sql = "DELETE FROM itemlists WHERE itemid = $1 RETURNING *";
-    let values = [id];
-    return pool.query(sql, values);//return the promise
-}
-//-----------------------------------------------
 
 //----------------------------------------------
 //----------------------------------------------
@@ -54,12 +47,13 @@ dbMethods.deleteFromDB = function(dbTable, dbCol, inpId){
     let values = [inpId];
     return pool.query(sql, values);//return the promise
 }
-dbMethods.changeDB = function(dbTable, dbCol, newDbValue, dbID, inpId){
-
-    let sql = `UPDATE ${dbTable} SET ${dbCol} = $1 WHERE ${dbID} = $2 RETURNING *`;
+dbMethods.changeDB = function(dbTable, dbCol, newDbValue, dbIfCol, inpId){
+    
+    let sql = `UPDATE ${dbTable} SET ${dbCol} = $1 WHERE ${dbIfCol} = $2 RETURNING *`;
     let values = [newDbValue, inpId];
     return pool.query(sql,values);//return the promise
 }
+//----------------------------------------------
 
 //----------------------------------------------
 //----------------------------------------------
@@ -79,40 +73,16 @@ dbMethods.getId = function(id) {
     let sql = "SELECT * FROM users WHERE id = $1";
     let values = [id];
     return pool.query(sql, values);
-}
+} 
 //----------------------------------------------
 dbMethods.createUser = function(username, password, salt) {
     let sql = "INSERT INTO users (id, username, password, salt) VALUES(DEFAULT, $1, $2, $3) returning *";
     let values = [username, password, salt];
     return pool.query(sql, values);
 }
-
 //----------------------------------------------
-dbMethods.deleteUser = function(id) {
-    let sql = "DELETE FROM users WHERE id = $1 RETURNING *";
-    let values = [id];
-    return pool.query(sql, values);
-}
-//----------------------------------------------
-//----------------------------------------------
-dbMethods.changeLastLogin = function (userid) {
-    
-    const d = new Date();
-    let day = d.getDate();
-    let month = d.getMonth();
-    let year = d.getFullYear();
-    
-    let hours = d.getHours();
-    let minutes = d.getMinutes();
-    let oneNumber = "0";
-    if (minutes.length === 1) {
-      minutes = oneNumber + minutes;
-    }
-   
-    let lastLoginText = `${day}.${month + 1}.${year} & ${hours}.${minutes}`;
-    let sql = `UPDATE users SET "lastLogin" = '${lastLoginText}' WHERE id = ${userid} RETURNING *`;
-    
-    
+dbMethods.changeLastLogout = function (userid, lastLogoutText) {
+    let sql = `UPDATE users SET "lastLogout" = '${lastLogoutText}' WHERE id = ${userid} RETURNING *`;
     return pool.query(sql); //return the promise
   };
 // export dbMethods---------------------------------

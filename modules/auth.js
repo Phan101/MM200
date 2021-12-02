@@ -10,14 +10,14 @@ function protect(req, res, next){
         return;
     }
 
-    let payload = authUtils.verifyToken(token);
-    if(!payload){
+    let decryptedUser = authUtils.verifyToken(token);
+    if(!decryptedUser){
         res.status(403).json({error: "Not a valid token"}).end();
         return;
     }
 
-    res.locals.userid = payload.userid;
-    res.locals.username = payload.user;
+    res.locals.userid = decryptedUser.userid;
+    res.locals.username = decryptedUser.user;
 
     next();
 }

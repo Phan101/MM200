@@ -46,7 +46,9 @@
     </div>
     <h3 id="txtResult"></h3>
     <!------------- JavaScript --------------->
-    <script src="/js/getUser.js"></script>
+    
+    <script src="js/getUser.js"></script>
+    <script src="js/manipulatelists.js"></script>
     <script>
       let container = document.getElementById("container");
       let txtResult = document.getElementById("txtResult");
@@ -90,18 +92,17 @@
           if (response.status != 200) {
             throw data.error;
           }
-
           userInfo = {
             id: data[0].id,
             username: data[0].username,
             salt: data[0].salt,
-            lastLogin: data[0].lastLogin
+            lastLogout: data[0].lastLogout
           };
 
           let userProfile = document.getElementById("userProfile");
           let lastLoggedIn = document.getElementById("lastLoggedIn");
           userProfile.innerHTML = `Welcome to your profile, <b>${userInfo.username}</b>.`;
-          lastLoggedIn.innerHTML = `Last login: <b>${userInfo.lastLogin}</b>.`
+          lastLoggedIn.innerHTML = `Last logout: <b>${userInfo.lastLogout}</b>.`
         } catch (error) {
           console.log(error);
         }
@@ -366,6 +367,7 @@
 
       // Log out button
       document.getElementById("logOut").addEventListener("click", function (evt) {
+          changeLastLogout();
           localStorage.clear();
           window.location.href = "/index.html";
         });

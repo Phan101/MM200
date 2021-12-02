@@ -20,7 +20,6 @@ router.get("/auth", protect, async function(req, res, next) {
 
 //-----------------------LISTS-----------------------
 router.get("/list", protect, async function(req, res, next) {
-
 	try{  
 		let data = await db.getAllLists();
 		res.status(200).json(data.rows).end();
@@ -52,7 +51,7 @@ router.post("/changelist", protect, async function(req,res,next){
 	let updata = req.body;
 	
 	try{
-		let data = await db.changeDB(updata.dbTable, updata.dbCol, updata.newDbText, updata.dbID, updata.id);
+		let data = await db.changeDB(updata.dbTable, updata.dbCol, updata.newDbText, updata.dbIfCol, updata.id);
 		if (data.rows.length > 0){
 			res.status(200).json({msg: "The item was updated successfully"}).end();
 		}
@@ -82,7 +81,7 @@ router.delete("/list", protect, async function(req, res, next){
 //---------------------------------------------------
 
 
-//-----------------------LISTS-----------------------
+//-----------------------LISTS ITEMS-----------------------
 router.get("/itemlist", protect, async function(req, res, next) {
 	try{  
 		let data = await db.getAllListItems();
@@ -130,7 +129,7 @@ router.post("/changeitemlist", protect, async function(req,res,next){
 	let updata = req.body;
 	
 	try{
-		let data = await db.changeDB(updata.dbTable, updata.dbCol, updata.newDbText, updata.dbID, updata.id);
+		let data = await db.changeDB(updata.dbTable, updata.dbCol, updata.newDbText, updata.dbIfCol, updata.id);
 		if (data.rows.length > 0){
 			res.status(200).json({msg: "The item was updated successfully"}).end();
 		}
@@ -142,23 +141,5 @@ router.post("/changeitemlist", protect, async function(req,res,next){
 	}
 });
 //---------------------------------------------------
-
-router.post("/lastlogin", protect, async function(req,res,next){
-	let updata = req.body;
-	
-	try{
-		let data = await db.changeLastLogin(updata.storageID);
-		
-		if (data.rows.length > 0){
-			res.status(200).json({msg: "The item was updated successfully"}).end();
-		}
-		else{
-			throw "The item couldn't be updated";
-		}
-	}catch (err){
-		next(err);
-	}
-});
-
 
 module.exports = router;
