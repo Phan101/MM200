@@ -135,6 +135,11 @@
                     })
                 //#share/unshare
 
+                    let checkLabel = document.createElement("label");
+                    checkLabel.innerHTML = "Public/Private";
+                    listdiv.insertBefore(checkLabel, listdiv.lastElementChild);
+
+
                 //edit list button
                     let btnEditList = document.createElement("button");
                     btnEditList.innerHTML = "Edit";
