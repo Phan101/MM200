@@ -1,7 +1,7 @@
 const crypto = require("crypto");
 
 
-const secret = "dronningmaudsland";
+const signatureKey = "antarktis" || process.env.SignatureKey;
 
 let utils = {};
 
@@ -56,8 +56,7 @@ utils.createToken = function(username, userID){
     let openPart = b64Part1 + "." + b64Part2;
     
     //create the 3. part (signature) using a hash-function in the crypto-module
-    let secret = "dronningmaudsland"; //must be stored in an env variable in the finished app
-    let sign = crypto.createHmac("SHA256", secret).update(openPart).digest("base64");
+    let sign = crypto.createHmac("SHA256", signatureKey).update(openPart).digest("base64");
     
     return openPart + "." + sign;
 }
@@ -70,8 +69,7 @@ utils.verifyToken = function(token){
     let openPart = tokenArr[0] + "." + tokenArr[1];
     let signToCheck = tokenArr[2];
     
-    let secret = "dronningmaudsland"; //must be stored in an env variable in the finished app
-    let sign = crypto.createHmac("SHA256", secret).update(openPart).digest("base64");
+    let sign = crypto.createHmac("SHA256", signatureKey).update(openPart).digest("base64");
 
     if(signToCheck != sign){
         //signature not ok

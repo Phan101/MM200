@@ -11,12 +11,13 @@
 <body>
  
     <!----------- HTML-elements -------------->
-    <a href="index.html">Home</a> 
+    <button onclick="window.location.href=`mylist.html`">My lists</button>
+    <button onclick="window.location.href=`userprofile.html`">My Profile</button>
     <button id="logOut">Logout</button>
-    <button id="yourProfile">Your profile</button>
-    <button onclick="showAllUsers()">Back</button>
     <div id="container" class="grid-container"></div>
     <!------------- JavaScript --------------->
+    
+    <script src="js/getUser.js"></script>
     <script src="/js/manipulatelists.js"></script>
     <script>
         let container = document.getElementById("container");
@@ -90,8 +91,7 @@
 
                 container.innerHTML = ""; //delete previous content
                 
-                for(let listvalue of listsData){   
-                    console.log(listvalue);
+                for(let listvalue of listsData){
                     if (listvalue.user_id === id && listvalue.visible === true){                    
                     //create list div
                         let listdiv = document.createElement("div");
@@ -130,12 +130,9 @@
     };
 
     document.getElementById("logOut").addEventListener("click", function(evt){
+        changeLastLogout();
         localStorage.clear();
         window.location.href = "/index.html";
-    });
-
-    document.getElementById("yourProfile").addEventListener("click", function(evt){
-        window.location.href = "/userprofile.html";
     });
     
     </script>
