@@ -1,4 +1,12 @@
 
+/* GENERAL */
+.center {
+    text-align: center;
+}
+
+body {
+    font-family: "Ubuntu", sans-serif;
+}
 /* CSS for Login page */
 .main {
     background-color: #FFFFFF;
@@ -13,7 +21,6 @@
     padding-top: 40px;
     padding-bottom: 25px;
     color: #8C55AA;
-    font-family: "Ubuntu", sans-serif;
     font-weight: bold;
     font-size: 23px;
     text-align: center;
@@ -24,7 +31,7 @@
     color: #3C3C3C;
 }
 
-#inpUsername, #inpPassword {
+#inpUsername, #inpPassword, #inpUsernameReg, #inpPasswordReg {
     width: 76%;
     color: rgb(38, 50, 56);
     font-weight: 700;
@@ -38,9 +45,8 @@
     box-sizing: border-box;
     border: 2px solid rgba(0, 0, 0, 0.2);
     margin-bottom: 20px;
-    margin-left: 46px;
+    /* margin-left: 46px; */
     text-align: center;
-    font-family: "Ubuntu", sans-serif;
 }
 
 #btnLogin, #btnCreate, #btnSignUp {
@@ -53,8 +59,7 @@
     padding-right: 40px;
     padding-bottom: 10px;
     padding-top: 10px;
-    font-family: "Ubuntu", sans-serif;
-    margin-left: 11.5%;
+    /* margin-left: 11.5%; */
     font-size: 13px;
     box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.04);
     display: inline-grid;
@@ -89,9 +94,8 @@
     background-color: rgba(0, 0, 0, 0.04); /* Svart opacity*/
     left: 0;
     top: 0;
+   /*  padding-top: 100px; */
     width: 100%;
-    height: 100%;
-    padding-top: 100px;
 }
 
 .modal-content {
@@ -100,7 +104,8 @@
     padding: 20px;
     border: 1px solid #888;
     width: 35%;
-    padding-left: 50px;
+   /*  padding-left: 50px; */
+   border-radius: 1.5em;
 }
 
 .close {

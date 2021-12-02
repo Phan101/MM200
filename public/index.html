@@ -9,23 +9,26 @@
 <body> 
 
     <!----------- HTML-elements -------------->
-    <div class="main">
-        <h1 class="titleText">Logg inn</h1>
+    <div class="main center">
+        <h1 class="titleText">Login</h1>
         <input id="inpUsername" type="text" placeholder="Username"/> <br>
-        <input id="inpPassword" type="password" placeholder="Password"/><input id="showPass" type="checkbox">Show password<br><br>
-        <button id="btnLogin">Logg inn</button>
+        <input id="inpPassword" type="password" placeholder="Password"/><br>
+        <input id="showPass" type="checkbox">Show password<br><br>
+        <button id="btnLogin">Log in</button>
         <p id="register">New user? Click to register</p>
         <h3 id="txtResult"></h3>
 
         <!-- Modal -->
         <div id="signupModal" class="modal">
             <!-- Modal content -->
-            <div class="modal-content">
+            <div class="modal-content center">
                 <span class="close">&times;</span>
-                
+                <h1 class="titleText">Register an user</h1>
                 <input id="inpUsernameReg" type="text" placeholder="Username"/><br>
-                <input id="inpPasswordReg" type="password" placeholder="Password"/><input id="showPassReg" type="checkbox">Show password<br><br>
+                <input id="inpPasswordReg" type="password" placeholder="Password"/><br>
+                <input id="showPassReg" type="checkbox">Show password<br><br>
                 <button id="btnSignUp">Sign up</button><br>
+                <h3 id="signUpResult"></h3>
             </div>
         </div>
     </div>
@@ -37,6 +40,7 @@
         let inpPasswordReg = document.getElementById("inpPasswordReg");
         let btnLogin = document.getElementById("btnLogin");
         let txtResult = document.getElementById("txtResult");
+        let signUpResult = document.getElementById("signUpResult");
         let btnSignUp = document.getElementById("btnSignUp");
         let showPass = document.getElementById("showPass");
         let showPassReg = document.getElementById("showPassReg");
@@ -92,11 +96,14 @@
                 }
 
                 txtResult.innerHTML = data.msg;
+                modal.style.display = "none";
             }
             catch (err){
                 console.log(err);
+                modal.style.display = "block";
                 txtResult.innerHTML = "Something went wrong - check the console window";
             }
+        
         });
         //---------------------------
         function createCredentialString(username,password){
