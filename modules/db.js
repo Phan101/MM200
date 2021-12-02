@@ -95,8 +95,8 @@ dbMethods.deleteUser = function(id) {
     return pool.query(sql, values);
 }
 //----------------------------------------------
-dbMethods.changeLastLogin = function (userid, lastLoginText) {
-    let sql = `UPDATE users SET "lastLogin" = '${lastLoginText}' WHERE id = ${userid} RETURNING *`;
+dbMethods.changeLastLogout = function (userid, lastLogoutText) {
+    let sql = `UPDATE users SET "lastLogout" = '${lastLogoutText}' WHERE id = ${userid} RETURNING *`;
     return pool.query(sql); //return the promise
   };
 // export dbMethods---------------------------------

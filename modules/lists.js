@@ -143,21 +143,7 @@ router.post("/changeitemlist", protect, async function(req,res,next){
 });
 //---------------------------------------------------
 
-// log when user logs in ------------
-router.post("/lastlogin", protect, async function(req,res,next){
-	let updata = req.body;
-	try{
-		let data = await db.changeLastLogin(updata.inpId, updata.text);
-		if (data.rows.length > 0){
-			res.status(200).json({msg: "The item was updated successfully"}).end();
-		}
-		else{
-			throw "The item couldn't be updated";
-		}
-	}catch (err){
-		next(err);
-	}
-});
+
 
 
 

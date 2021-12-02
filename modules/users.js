@@ -160,6 +160,20 @@ router.post("/changeuserinfo", async function(req,res,next){
 	}
 });
 
-
+// log when user logs in ------------
+router.post("/lastlogout", protect, async function(req,res,next){
+	let updata = req.body;
+	try{
+		let data = await db.changeLastLogout(updata.inpId, updata.text);
+		if (data.rows.length > 0){
+			res.status(200).json({msg: "The item was updated successfully"}).end();
+		}
+		else{
+			throw "The item couldn't be updated";
+		}
+	}catch (err){
+		next(err);
+	}
+});
 // ----
 module.exports = router;

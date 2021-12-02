@@ -224,8 +224,8 @@ async function deleteListItem(listItemID){
 }
 //#delete list item 
 
-async function changeLastLogin(){
-    let url = "/lastlogin";
+async function changeLastLogout(){
+    let url = "/lastlogout";
     let token = localStorage.getItem("token");
     let loggedInUser = await getDecryptedToken(token);
     let loggedInId = loggedInUser.userid;
@@ -240,11 +240,11 @@ async function changeLastLogin(){
     let hours = d.getHours().toString();
     let minutes = d.getMinutes().toString();
     
-    let lastLoginText = `${day.padStart(2,"0")}.${month.padStart(2,"0")}.${year}, kl. ${hours.padStart(2,"0")}:${minutes.padStart(2,"0")}`;
+    let lastLogoutText = `${day.padStart(2,"0")}.${month.padStart(2,"0")}.${year}, kl. ${hours.padStart(2,"0")}:${minutes.padStart(2,"0")}`;
     
     //get curr date and time
     let updata = {
-        text: lastLoginText,
+        text: lastLogoutText,
         inpId: userId
         
     }

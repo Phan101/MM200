@@ -67,7 +67,7 @@
                 }
                 txtResult.innerHTML = data.msg;
                 localStorage.setItem("token", data.token);
-                changeLastLogin();
+                changeLastLogout();
                 window.location.href = "/mylist.html";
             }
             catch(err){
