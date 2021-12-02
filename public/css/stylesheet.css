@@ -37,6 +37,15 @@ li a:hover {
     cursor: pointer;
 }
 
+#container > div{
+    border: 1px black solid;
+    margin: 5px;
+}
+#container > div >div{
+    border: 1px grey dotted;
+    margin: 5px;
+}
+
 /* CSS for Login page */
 .main {
     background-color: #FFFFFF;
