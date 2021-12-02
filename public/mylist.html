@@ -15,11 +15,10 @@
     
     <div id="newItemDiv">
         <button id="btnNewList">New List</button>
-    </div>
+    </div> 
     
     <script src="/js/manipulatelists.js"></script>
     <script src="/js/getUser.js"></script>
-    <script src="/js/search.js"></script>
     <script>
         let container = document.getElementById("container");
         let newItemBox = document.getElementById("newItemBox");
@@ -139,23 +138,22 @@
                     let btnEditList = document.createElement("button");
                     btnEditList.innerHTML = "Edit";
                     listdiv.appendChild(btnEditList);
-
+                    let editBtnStates = {clicked: false};
                     btnEditList.addEventListener("click", function(){
-                        let inpEditList = document.createElement("input");
                         
-                        if (btnStates.clicked === false) {
+                        let inpEditList = document.createElement("input");
+                        inpEditList.id = "editListInp"
+                        if (editBtnStates.clicked === false) {
                             listdiv.insertBefore(inpEditList, btnEditList);
-                            btnStates.clicked = true;
+                            editBtnStates.clicked = true;
                         }else{
-                            let inputBox = listdiv.getElementsByTagName("input")[1];
+                            let inputBox = document.getElementById("editListInp");
                             editList(inputBox.value, listvalue.id);
 
                             inputBox.remove();
-                            btnStates.clicked = false;
-                        }
-                        
+                            editBtnStates.clicked = false;
+                        } 
                     });
-                    
                 //#edit list button
 
                 //delete list button
@@ -172,26 +170,27 @@
                     
                 //new item button
                     let newItemBtn = document.createElement("button");
-                    let btnStates = {clicked: false};
+                    let newItemBtnStates = {clicked: false};
                     newItemBtn.innerHTML = "new item";
                     listdiv.appendChild(newItemBtn);
 
                     newItemBtn.addEventListener("click", function(evt){
                         
                         let newListItemInp = document.createElement("input");
-                        
-                        if (btnStates.clicked === false) {
+                        newListItemInp.id = "newItemInp";
+                        if (newItemBtnStates.clicked === false) {
                             listdiv.insertBefore(newListItemInp, newItemBtn);
-                            btnStates.clicked = true;
+                            newItemBtnStates.clicked = true;
                         }else{
-                            let inputBox = listdiv.getElementsByTagName("input")[1];
+                            let inputBox = document.getElementById("newItemInp");
                             newListItem(inputBox.value, listvalue.id)
 
                             inputBox.remove();
-                            btnStates.clicked = false;
+                            newItemBtnStates.clicked = false;
                         }
                     }); 
                 //#new item  button
+                
                     for (let itemvalue of itemsData){
                         if (listvalue.id === itemvalue.listeid) {
                             let listItemDiv = document.createElement("div");
@@ -212,7 +211,6 @@
                             });
                             
                             listItemDiv.appendChild(delbtn);
-
                         // # delete button
 
                         //<br>-tag
@@ -237,9 +235,7 @@
                                     let editedInputBox = itemText.children[0];
                                     let newText = editedInputBox.value;
                                     editListItem(itemvalue.itemid,newText);
-                                    
                                 }
-                                
                             });
                             
                             listItemDiv.insertBefore(editBtn, listItemDiv.lastElementChild);
@@ -248,12 +244,11 @@
                     }
                 } 
             }
-
         }
         catch(error) {
             console.log(error);
         }
-        }
+    }
         //#main show code
         document.getElementById("logOut").addEventListener("click", function(evt){
             localStorage.clear();
@@ -263,9 +258,6 @@
         document.getElementById("yourProfile").addEventListener("click", function(evt){
             window.location.href = "/userprofile.html";
         });
-
-        
-        
     </script>
       <!---------------- CSS ------------------->
       <style>        
