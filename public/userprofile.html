@@ -9,9 +9,11 @@
   </head>
   <body>
     <!----------- HTML-elements -------------->
-    <a href="mylist.html">Back</a>
+    <button onclick="window.location.href=`mylist.html`">Home</button>
+    <button onclick="window.location.href=`todoLists.html`">All Users</button>
     <button id="logOut">Logout</button>
-    <p id="userProfile" style="font-size: 200%"></p>
+    <p id="userProfile" style="font-size: 200%"></p><hr>
+    <p id="lastLoggedIn"></p><hr>
     <button id="changeUsername">Change Username</button>
     <button id="changePassword">Change Password</button>
     <button id="deleteUser">Delete User</button>
@@ -93,15 +95,19 @@
             id: data[0].id,
             username: data[0].username,
             salt: data[0].salt,
+            lastLogin: data[0].lastLogin
           };
 
           let userProfile = document.getElementById("userProfile");
+          let lastLoggedIn = document.getElementById("lastLoggedIn");
           userProfile.innerHTML = `Welcome to your profile, <b>${userInfo.username}</b>.`;
+          lastLoggedIn.innerHTML = `Last login: <b>${userInfo.lastLogin}</b>.`
         } catch (error) {
           console.log(error);
         }
       }
 
+      let testlist = [];
       //Change Username
       document.getElementById("changeUsername").addEventListener("click", async function (evt) {
           showChangeUsernameDiv();
@@ -139,11 +145,13 @@
               changeUsernameBtn.innerHTML = "Change";
               usernameDiv.appendChild(changeUsernameBtn);
 
-              changeUsernameBtn.addEventListener("click", async function (evt) {
+              changeUsernameBtn.addEventListener("click", function (evt) {
                 let newUsername = document.getElementById("newUsername");
 
+                testlist.push(newUsername.value);
                 editUsername(newUsername.value, userInfo.id);
               });
+
             } catch (err) {
               txtResult.innerHTML = err;
             }
@@ -176,10 +184,15 @@
           if (response.status !== 200) {
             throw data.error;
           }
+          if (txtResult.innerHTML !== "") {
+            alert(data.msg);
+            location.reload();
+          }
         } catch (error) {
           txtResult.innerHTML = error;
         }
         if (txtResult.innerHTML == "") {
+          alert("Username updated successfully");
           location.reload(); // Refresher for å printe ut nye profilnavnet
         }
       }
@@ -296,7 +309,9 @@
           if (response.status !== 200) {
             throw data.error;
           }
-          txtResult.innerHTML = data.msg;
+          alert(data.msg);
+          location.reload();
+
         } catch (err) {
           console.log(err);
           txtResult.innerHTML =
