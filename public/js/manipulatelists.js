@@ -89,7 +89,7 @@ async function editList(headerText, listID){
         dbTable: "todolists",
         dbCol: "header",
         newDbText: headerText,
-        dbID: "id",
+        dbIfCol: "id",
         id: listID
     }
 
@@ -160,7 +160,7 @@ async function editListItem(itemID, itemText){
         dbTable: "itemlists",
         dbCol: "text",
         newDbText: itemText,
-        dbID: "itemid",
+        dbIfCol: "itemid",
         id: itemID
     }
 
@@ -222,7 +222,7 @@ async function deleteListItem(listItemID){
         console.log(error);
     }
 }
-//#delete list item
+//#delete list item 
 
 async function changeLastLogin(){
     let url = "/lastlogin";
@@ -230,11 +230,24 @@ async function changeLastLogin(){
     let loggedInUser = await getDecryptedToken(token);
     let loggedInId = loggedInUser.userid;
     let userId = loggedInId;
+    //get curr date and time
+    const d = new Date();
+    let day = d.getDate().toString();
+    let month = d.getMonth();
+    month = (month+1).toString();
+    let year = d.getFullYear();
     
+    let hours = d.getHours().toString();
+    let minutes = d.getMinutes().toString();
+    
+    let lastLoginText = `${day.padStart(2,"0")}.${month.padStart(2,"0")}.${year}, kl. ${hours.padStart(2,"0")}:${minutes.padStart(2,"0")}`;
+    
+    //get curr date and time
     let updata = {
-        storageID: userId
+        text: lastLoginText,
+        inpId: userId
+        
     }
-
     let cfg = {
         method: "POST",
         headers: {

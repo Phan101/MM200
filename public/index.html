@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="/css/stylesheet.css">
 </head>
 <body> 
-
+ 
     <!----------- HTML-elements -------------->
     <div class="main">
         <h1 class="titleText">Logg inn</h1>
@@ -30,6 +30,9 @@
         </div>
     </div>
     <!------------- JavaScript --------------->
+    
+    <script src="js/getUser.js"></script>
+    <script src="js/manipulatelists.js"></script>
     <script>
         let inpUsername = document.getElementById("inpUsername");
         let inpPassword = document.getElementById("inpPassword");
@@ -64,7 +67,7 @@
                 }
                 txtResult.innerHTML = data.msg;
                 localStorage.setItem("token", data.token);
-                
+                changeLastLogin();
                 window.location.href = "/mylist.html";
             }
             catch(err){

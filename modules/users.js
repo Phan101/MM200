@@ -112,7 +112,7 @@ router.post("/updatepassword", async function(req, res, next){
     let hash = authUtils.updateHash(cred.password, updata.dbSalt);
 
     try{
-        let data = await db.changeDB(updata.dbTable, updata.dbCol, hash.value, updata.dbID, updata.inpId);
+        let data = await db.changeDB(updata.dbTable, updata.dbCol, hash.value, updata.dbIfCol, updata.inpId);
 
         if(data.rows.length > 0){
             res.status(200).json({msg: "The password was updated successfully"}).end();
@@ -147,7 +147,7 @@ router.delete("/deleteuser", protect, async function(req, res, next){
 router.post("/changeuserinfo", async function(req,res,next){
 	let updata = req.body;
 	try{
-		let data = await db.changeDB(updata.dbTable, updata.dbCol, updata.newDbText, updata.dbID, updata.id);
+		let data = await db.changeDB(updata.dbTable, updata.dbCol, updata.newDbText, updata.dbIfCol, updata.id);
 		if (data.rows.length > 0){
 			res.status(200).json({msg: "The username was updated successfully"}).end();
 		}
@@ -159,7 +159,6 @@ router.post("/changeuserinfo", async function(req,res,next){
         return;
 	}
 });
-
 
 
 // ----

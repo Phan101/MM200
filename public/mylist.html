@@ -3,90 +3,94 @@
     <meta charset="UTF-8">
     <title>mylists</title>
     <script src="js/security.js"></script>
-    <link rel="stylesheet" type="text/css" href="/css/stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="css/stylesheet.css">
 </head>
 <body>
     <a href="index.html">Home</a> 
     <button id="logOut">Logout</button>
     <button id="yourProfile">Your profile</button>
     <a href="users.html">See all profiles</a>
-    <!--<input id="searchProfiles" type="text" placeholder="search">-->
     <div id="container" class="grid-container"></div>
     
     <div id="newItemDiv">
         <button id="btnNewList">New List</button>
     </div> 
-    
-    <script src="/js/manipulatelists.js"></script>
+
     <script src="/js/getUser.js"></script>
+    <script src="/js/manipulatelists.js"></script>
     <script>
         let container = document.getElementById("container");
         let newItemBox = document.getElementById("newItemBox");
         let submitListItemBtn = document.getElementById("submitListItem");
-        // new:
         let btnShowNewList = document.getElementById("btnNewList");
         let divNewList = document.getElementById("newItemDiv");
         
        
-        changeLastLogin();
+        
         showAllToDoLists();
+    //show new list div   
+        btnShowNewList.addEventListener("click", newListEvent);
+    //#show new list div  
+
+    async function newListEvent() {  
+        
+        let token = localStorage.getItem("token");
+        let loggedInUser = await getDecryptedToken(token);
+        let loggedInId = loggedInUser.userid;
+        //new list input box 
+            let inpNewList = document.createElement("input");
+            divNewList.appendChild(inpNewList);
+        //#new list input box
+    
+        //new list button
+            let btnAddNewList = document.createElement("button");
+            btnAddNewList.innerHTML = "Add new list";
+            divNewList.appendChild(btnAddNewList);
+    
+        btnAddNewList.addEventListener("click", async function(evt){
+            let url = "/list";
+            let updata = {
+                heading: inpNewList.value,                    
+                userid: loggedInId
+            };
+            let cfg = {
+                method: "POST",
+                headers: {
+                    "content-type":"application/json",
+                    "authorization": token
+                },
+                body: JSON.stringify(updata)
+            };
+    
+            try{
+                let response = await fetch(url, cfg);
+                let data = await response.json();
+                if(response.status != 200){
+                    throw data.error;
+                }                    
+                btnShowNewList.hidden = false;
+                //btnShowNewList.removeEventListener("click", newListEvent);
+                inpNewList.remove();
+                btnAddNewList.remove();
+                showAllToDoLists(); //refresh the list               
+                }
+            catch(err){
+                console.log(err);
+            }
+    
+        });
+    
+        btnShowNewList.hidden = true;
+    }
+    //#new list button
+           
+           
     //main show code    
         async function showAllToDoLists() {
-            let token = localStorage.getItem("token");
-            let loggedInUser = await getDecryptedToken(token);
-            let loggedInId = loggedInUser.userid;
-        
-        //show new list div   
-            btnShowNewList.addEventListener("click", newListEvent);
-    //#show new list div   
-            function newListEvent() {
-                
-            //new list input box 
-                let inpNewList = document.createElement("input");
-                divNewList.appendChild(inpNewList);
-            //#new list input box
-
-            //new list button
-                let btnAddNewList = document.createElement("button");
-                btnAddNewList.innerHTML = "Add new list";
-                divNewList.appendChild(btnAddNewList);
-
-                btnAddNewList.addEventListener("click", async function(evt){
-                    let url = "/list";
-                    let updata = {
-                        heading: inpNewList.value,
-                        userid: loggedInId
-                    };
-                    let token = localStorage.getItem("token");
-                    let cfg = {
-                        method: "POST",
-                        headers: {
-                            "content-type":"application/json",
-                            "authorization": token
-                        },
-                        body: JSON.stringify(updata)
-                    };
-
-                    try{
-                        let response = await fetch(url, cfg);
-                        let data = await response.json();
-                        if(response.status != 200){
-                            throw data.error;
-                        }
-                        btnShowNewList.hidden = false;
-                        btnShowNewList.removeEventListener("click", newListEvent);
-                        inpNewList.remove();
-                        btnAddNewList.remove();
-                        showAllToDoLists(); //refresh the list
-                    }
-                    catch(err){
-                        console.log(err);
-                    }
-
-                });
-            //#new list button
-                btnShowNewList.hidden = true;
-            }
+        let token = localStorage.getItem("token");
+        let loggedInUser = await getDecryptedToken(token);
+        let loggedInId = loggedInUser.userid;
+         
         let itemUrl = "/itemlist";
         let listUrl = "/list";
         let cfg = {
@@ -249,7 +253,9 @@
             console.log(error);
         }
     }
-        //#main show code
+    
+
+    //#main show code
         document.getElementById("logOut").addEventListener("click", function(evt){
             localStorage.clear();
             window.location.href = "/index.html";

@@ -52,7 +52,7 @@ router.post("/changelist", protect, async function(req,res,next){
 	let updata = req.body;
 	
 	try{
-		let data = await db.changeDB(updata.dbTable, updata.dbCol, updata.newDbText, updata.dbID, updata.id);
+		let data = await db.changeDB(updata.dbTable, updata.dbCol, updata.newDbText, updata.dbIfCol, updata.id);
 		if (data.rows.length > 0){
 			res.status(200).json({msg: "The item was updated successfully"}).end();
 		}
@@ -130,7 +130,7 @@ router.post("/changeitemlist", protect, async function(req,res,next){
 	let updata = req.body;
 	
 	try{
-		let data = await db.changeDB(updata.dbTable, updata.dbCol, updata.newDbText, updata.dbID, updata.id);
+		let data = await db.changeDB(updata.dbTable, updata.dbCol, updata.newDbText, updata.dbIfCol, updata.id);
 		if (data.rows.length > 0){
 			res.status(200).json({msg: "The item was updated successfully"}).end();
 		}
@@ -143,12 +143,11 @@ router.post("/changeitemlist", protect, async function(req,res,next){
 });
 //---------------------------------------------------
 
+// log when user logs in ------------
 router.post("/lastlogin", protect, async function(req,res,next){
 	let updata = req.body;
-	
 	try{
-		let data = await db.changeLastLogin(updata.storageID);
-		
+		let data = await db.changeLastLogin(updata.inpId, updata.text);
 		if (data.rows.length > 0){
 			res.status(200).json({msg: "The item was updated successfully"}).end();
 		}
@@ -159,6 +158,7 @@ router.post("/lastlogin", protect, async function(req,res,next){
 		next(err);
 	}
 });
+
 
 
 module.exports = router;
