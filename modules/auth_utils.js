@@ -1,7 +1,7 @@
 const crypto = require("crypto");
 
 
-const signatureKey = "antarktis" || process.env.SignatureKey;
+const signatureKey = process.env.SignatureKey;
 
 let utils = {};
 
