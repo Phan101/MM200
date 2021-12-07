@@ -16,8 +16,9 @@ async function getDecryptedToken(token){
         if(response.status != 200){
             throw data.error
         }
-        data = JSON.parse(data)
-        return data
+        data = JSON.parse(data);
+        console.log(data);
+        return data;
     }
     catch(error){
         console.log(error);
